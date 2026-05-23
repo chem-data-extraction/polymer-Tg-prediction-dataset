@@ -4,15 +4,15 @@
 
 ## Topic
 
-Aptamer–protein binding dataset (example template).
+Polymer Glass Transition Temperature (Tg) Prediction Dataset.
 
 ## Scientific task
 
-Collect experimentally reported aptamer–protein binding measurements for comparing affinity values and assay conditions across sources.
+Collect experimentally reported glass transition temperatures (Tg) for synthetic polymers defined by their SMILES repeat unit, for downstream structure–property modeling and cross-source comparison of Tg values across polymer families.
 
 ## One-record definition
 
-**One record** = one experimentally reported aptamer–protein binding measurement from a specific source (one row in `data/processed/dataset.csv`).
+**One record** = one experimentally reported Tg measurement for one polymer (defined by its repeat unit SMILES) under specific measurement conditions from one identified source (one row in `data/processed/dataset.csv`).
 
 ## Examples of records
 
