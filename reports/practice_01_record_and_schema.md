@@ -1,7 +1,5 @@
 # Practice 1 — Record definition and dataset schema
 
-> Replace template text with your project decisions. Keep this report aligned with `project.json` and `specs/dataset_schema.json`.
-
 ## Topic
 
 Polymer Glass Transition Temperature (Tg) Prediction Dataset.
@@ -27,18 +25,46 @@ Collect experimentally reported glass transition temperatures (Tg) for synthetic
 
 | Example | Why it is not a record |
 |---------|-------------------------|
-| General review paragraph on SELEX without numeric binding data | No measurement |
-| Full list of 50 sequences without per-sequence affinity | Not one measurement per row (unless split) |
-| Predicted docking score without experimental citation | Out of scope if only experimental data allowed |
+| "Tg of polystyrene is around 100 °C" (no precise value, no source table) | Vague statement, not a single identified measurement |
+| Tg from MD simulation or group-contribution estimation | Not experimental; out of scope |
+| Tg range "320–380 K" without a central value | Not a single numeric value |
+| Polystyrene Tg without knowing which source reported it | Missing provenance — cannot assign source_id |
+| Tg for PS/PMMA blend without composition specified | Composition required for non-pure system |
 
 ## Dataset fields
 
-List each schema field and how you will populate it. Update `specs/dataset_schema.json` when fields change.
+See `specs/dataset_schema.json` for full definitions. Summary:
+
+| Field | Type | Required | Notes |
+|-------|-------|----------|--------|
+| `record_id` | string | yes | Stable unique ID, e.g. `rec_tg_ps_chen2021_pdf_001` |
+| `polymer_name` | string | yes | Name as given in source |
+| `repeat_unit_smiles` | string | yes | SMILES with * markers; canonicalize via RDKit |
+| `polymer_class` | string | yes | homopolymer / copolymer / conjugated_polymer / other |
+| `tg_value` | number | yes | Numeric, in tg_unit |
+| `tg_unit` | string | yes | K or C (as reported) |
+| `tg_value_K` | number | yes | Normalized to Kelvin for comparison |
+| `tg_uncertainty` | number | optional | ±σ if reported |
+| `measurement_method` | string | yes | DSC / DMA / dilatometry / TMA / other / unknown |
+| `heating_rate_K_min` | number | optional | Typically 10 K/min for DSC |
+| `atmosphere` | string | optional | N2 / air / Ar / vacuum |
+| `molecular_weight_g_mol` | number | optional | Often absent in ML datasets |
+| `mw_type` | string | optional | Mn / Mw — required if Mw present |
+| `source_id` | string | yes | Links to source_map.json |
+| `source_type` | string | yes | scientific_paper / database / github_repository / … |
+| `doi` | string | optional | DOI string when available |
+| `conflict_flag` | boolean | optional | True if another source gives Tg differing >10 K |
+| `extraction_method` | string | optional | pdf_table / pdf_text_regex / github_payload / … |
+| `notes` | string | optional | Curation notes and caveats |
 
 ## Ambiguous cases
 
-Document decisions here, for example:
-
-- Multiple Kd values for the same aptamer under different buffers → separate records or one record with notes?
-- Range reported as “0.1–1 nM” → store null + note, or midpoint?
-- Duplicate sequence in paper and database → deduplication rule in Practice 5.
+| Situation | Decision |
+|-----------|-------------------------|
+| Same polymer measured at different heating rates (5 vs 10 K/min) | Separate records; record heating_rate_K_min in each |
+| Tg reported as a range "320–380 K" | Store null in tg_value; note range in notes field |
+| Same SMILES in paper and database with different Tg | Keep both records; set conflict_flag = True |
+| Plasticized polymer (e.g. PVC + DOP) | Exclude unless plasticizer type and loading fraction both recorded |
+| Copolymer with unknown sequence distribution | Include with polymer_class = copolymer; note ambiguity in notes |
+| Polymer name given as abbreviation (PS, PMMA) | Expand to full name; store abbreviation in notes |
+| Tg reported as "above 300 K" without a number | Exclude; not a numeric value |
