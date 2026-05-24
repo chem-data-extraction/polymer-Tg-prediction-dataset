@@ -18,8 +18,10 @@ Collect experimentally reported glass transition temperatures (Tg) for synthetic
 
 | Example | Why it counts |
 |---------|----------------|
-| Kd = 0.5 nM for sequence GGTTGGTGTGGTTGG vs thrombin from Table 2 in Green 2018 | Single measurement + sequence + target + source |
-| IC50 from supplementary table for one aptamer–lysozyme pair | One numeric binding outcome tied to one pair |
+| Tg = 373 K for polystyrene (CC(c1ccccc1)), Table 1, Chen 2021, DSC, 10 K/min, N2 | Single measurement + SMILES + method + source |
+| Tg = 126 °C for conjugated polymer (SMILES: C12=NSN…) from figotj/Polymer_Tg_ GitHub repo | Single measurement + SMILES + identified source |
+| Tg = 378 K for PMMA (CC(C)(C(=O)OC)), Fatriansyah 2024, Table 2 | Single measurement + SMILES + source |
+| Tg = 354 K for PVC (CC(Cl)), PoLyInfo manual export, DSC | Single measurement + SMILES + method |
 
 ## Non-record examples
 
