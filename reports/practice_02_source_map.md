@@ -16,7 +16,7 @@
 
 ## Source groups
 
-# scientific_papers (4 sources)
+*scientific_papers (4 sources)*
 
 | source_id | citation | DOI | records | license |
 |-----------|----------|-----|---------|---------|
@@ -28,7 +28,7 @@
 *paper_chen_2021*, *paper_fatriansyah_2024*, *paper_uddin_2024* — open-access CC BY papers. Training datasets sourced from PoLyInfo — not republished; data available from authors upon request. Extraction targets: benchmark Tg values from tables and body text. Method: `pdf_table` or `pdf_text_regex`.
 *paper_rasulev_2024* — the primary bulk source for this project. 902 unique homopolymers with SMILES and experimental Tg assembled independently from public sources and rigorously deduplicated. Published as Supplementary Data 1 (CC BY). Extraction method: `api` (direct download, `pandas.read_csv()`).
 
-# databases (1 source)
+*databases (1 source)*
 
 | source_id | database | records | access_status |
 |-----------|----------|--------------|---------|
