@@ -1,135 +1,191 @@
 {
   "schema_version": "0.1.0",
-  "dataset_title": "Aptamer–protein binding dataset",
+  "dataset_title": "Polymer Glass Transition Temperature Dataset",
   "fields": [
     {
       "name": "record_id",
       "type": "string",
       "required": true,
-      "description": "Stable unique identifier for one binding measurement record.",
-      "example": "rec_apt_thrombin_2018_pdf_001"
+      "description": "Stable unique identifier for one Tg measurement record.",
+      "example": "rec_tg_polystyrene_chen2021_pdf_001"
     },
     {
-      "name": "aptamer_sequence",
+      "name": "polymer_name",
       "type": "string",
       "required": true,
-      "description": "Nucleotide sequence of the aptamer (DNA or RNA), 5' to 3'.",
-      "example": "GGTTGGTGTGGTTGG",
-      "normalization_rule": "Uppercase; remove spaces and hyphens; keep only A,C,G,T,U."
+      "description": "Common or IUPAC name of the polymer as given in the source.",
+      "example": "Polystyrene",
+      "normalization_rule": "Preserve original name; add canonical alias in notes if differs."
     },
     {
-      "name": "target_name",
+      "name": "repeat_unit_smiles",
       "type": "string",
       "required": true,
-      "description": "Name of the protein or biomolecular target.",
-      "example": "Thrombin"
+      "description": "SMILES of the polymer repeat unit with * as polymerization markers.",
+      "example": "*CC(c1ccccc1)*",
+      "normalization_rule": "Canonicalize via RDKit; replace [*] with * before parsing."
     },
     {
-      "name": "target_type",
-      "type": "string",
-      "required": false,
-      "description": "Broad classification of the target (e.g. enzyme, receptor, toxin).",
-      "example": "serine protease"
-    },
-    {
-      "name": "measurement_type",
+      "name": "polymer_class",
       "type": "string",
       "required": true,
-      "description": "Reported affinity or binding metric (Kd, Ki, IC50, etc.).",
-      "example": "Kd"
+      "description": "Broad structural class of the polymer.",
+      "example": "homopolymer",
+      "allowed_values": [
+        "homopolymer",
+        "copolymer",
+        "block_copolymer",
+        "blend",
+        "conjugated_polymer",
+        "other"
+      ]
     },
     {
-      "name": "measurement_value",
+      "name": "tg_value",
+      "type": "number",
+      "required": true,
+      "description": "Tg value as reported in the source, in the unit given by tg_unit.",
+      "example": 373
+    },
+    {
+      "name": "tg_unit",
+      "type": "string",
+      "required": true,
+      "description": "Unit of tg_value as reported in the source.",
+      "example": "K",
+      "allowed_values": [
+        "K",
+        "C"
+      ],
+      "normalization_rule": "Store as reported; compute tg_value_K separately."
+    },
+    {
+      "name": "tg_value_K",
+      "type": "number",
+      "required": true,
+      "description": "Tg converted to Kelvin for cross-source comparison. tg_value_K = tg_value if K; tg_value + 273.15 if C.",
+      "example": 373
+    },
+    {
+      "name": "tg_uncertainty",
       "type": "number",
       "required": false,
-      "description": "Numeric value as reported in the source.",
-      "example": 0.5
+      "description": "Reported standard deviation or uncertainty in the same unit as tg_value.",
+      "example": 2
     },
     {
-      "name": "measurement_unit",
+      "name": "measurement_method",
       "type": "string",
-      "required": false,
-      "description": "Unit of measurement_value (nM, μM, pM, etc.).",
-      "example": "nM",
-      "normalization_rule": "Map synonyms to nM, μM, pM, M; store original in notes if converted."
+      "required": true,
+      "description": "Experimental technique used to measure Tg.",
+      "example": "DSC",
+      "allowed_values": [
+        "DSC",
+        "DMA",
+        "dilatometry",
+        "TMA",
+        "other",
+        "unknown"
+      ]
     },
     {
-      "name": "normalized_value_nm",
+      "name": "heating_rate_K_min",
       "type": "number",
       "required": false,
-      "description": "Binding affinity converted to nanomolar (nM) for comparison.",
-      "example": 0.5,
-      "normalization_rule": "Convert measurement_value using measurement_unit to nM."
+      "description": "Heating or cooling rate during DSC or DMA measurement, in K/min.",
+      "example": 10
     },
     {
-      "name": "assay_method",
+      "name": "atmosphere",
       "type": "string",
       "required": false,
-      "description": "Experimental method used to obtain the measurement.",
-      "example": "surface plasmon resonance"
+      "description": "Atmosphere during measurement.",
+      "example": "N2",
+      "allowed_values": [
+        "N2",
+        "air",
+        "Ar",
+        "vacuum",
+        "unknown"
+      ]
     },
     {
-      "name": "buffer",
-      "type": "string",
-      "required": false,
-      "description": "Buffer composition during the binding assay.",
-      "example": "PBS with 5 mM MgCl2"
-    },
-    {
-      "name": "temperature_c",
+      "name": "molecular_weight_g_mol",
       "type": "number",
       "required": false,
-      "description": "Assay temperature in degrees Celsius.",
-      "example": 25
+      "description": "Number-average (Mn) or weight-average (Mw) molecular weight in g/mol.",
+      "example": 100000
+    },
+    {
+      "name": "mw_type",
+      "type": "string",
+      "required": false,
+      "description": "Type of molecular weight reported. Required when molecular_weight_g_mol is present.",
+      "example": "Mn",
+      "allowed_values": [
+        "Mn",
+        "Mw",
+        "Mv",
+        "unknown"
+      ]
     },
     {
       "name": "source_id",
       "type": "string",
       "required": true,
-      "description": "Identifier linking to an entry in specs/source_map.json.",
-      "example": "paper_green_2018"
+      "description": "Identifier linking this record to an entry in specs/source_map.json.",
+      "example": "paper_chen_2021"
     },
     {
       "name": "source_type",
       "type": "string",
-      "required": false,
-      "description": "Category of source (paper, database, web page, etc.).",
-      "example": "scientific_paper"
-    },
-    {
-      "name": "source_url",
-      "type": "string",
-      "required": false,
-      "description": "URL or landing page for the source.",
-      "example": "https://doi.org/10.1021/example"
+      "required": true,
+      "description": "Category of the source this record came from.",
+      "example": "scientific_paper",
+      "allowed_values": [
+        "scientific_paper",
+        "database",
+        "github_repository",
+        "supplementary_data",
+        "handbook",
+        "ml_dataset"
+      ]
     },
     {
       "name": "doi",
       "type": "string",
       "required": false,
-      "description": "Digital Object Identifier when available.",
-      "example": "10.1021/example"
+      "description": "Digital Object Identifier of the source when available.",
+      "example": "10.3390/polym13111898"
+    },
+    {
+      "name": "conflict_flag",
+      "type": "boolean",
+      "required": false,
+      "description": "True if another source reports a different Tg (delta > 10 K) for the same repeat_unit_smiles.",
+      "example": false
     },
     {
       "name": "extraction_method",
       "type": "string",
       "required": false,
-      "description": "How the record was obtained (pdf_manual, pdf_table, web_scrape, etc.).",
-      "example": "pdf_table"
-    },
-    {
-      "name": "extraction_confidence",
-      "type": "string",
-      "required": false,
-      "description": "Confidence in extracted values: high, medium, low, or unknown.",
-      "example": "high"
+      "description": "How the record was extracted from its source.",
+      "example": "pdf_table",
+      "allowed_values": [
+        "pdf_table",
+        "pdf_text_regex",
+        "web_scrape",
+        "github_payload",
+        "manual",
+        "api"
+      ]
     },
     {
       "name": "notes",
       "type": "string",
       "required": false,
-      "description": "Free-text notes, caveats, or provenance details.",
-      "example": "Value taken from Table 2; unit inferred from caption."
+      "description": "Free-text curation notes, caveats, or provenance details.",
+      "example": "Tg from Table 1; heating rate 10 K/min inferred from methods section."
     }
   ]
 }
