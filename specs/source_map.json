@@ -1,7 +1,7 @@
 {
   "topic": "Polymer glass transition temperature (Tg) experimental measurements",
   "root_query": "polymer glass transition temperature Tg DSC experimental SMILES repeat unit dataset prediction",
-  "source_map_version": "0.1.0",
+  "source_map_version": "0.3.0",
   "source_groups": {
     "scientific_papers": [
       {
@@ -32,7 +32,7 @@
           "tool": "pdfplumber word-coordinate reconstruction",
           "target": "Table 1 — 12 benchmark polymers with SMILES and Tg (K)"
         },
-        "notes": "Table 1 contains SMILES and Tg for 12 benchmark polymers. Full dataset of 283 polymers sourced from PoLyInfo — not republished in the paper."
+        "notes": "Table 1 contains SMILES and Tg for 12 benchmark polymers. Full training dataset of 283 polymers sourced from PoLyInfo — not republished. Code: github.com/figotj/RNN-Tg."
       },
       {
         "source_id": "paper_fatriansyah_2024",
@@ -61,7 +61,7 @@
           "tool": "PyMuPDF + regex",
           "target": "inline Tg values in Section 2; Table 2 contains model comparison metrics only"
         },
-        "notes": "1437-polymer dataset sourced from PoLyInfo — not republished. Benchmark Tg values extractable from body text. Data availability: authors upon request."
+        "notes": "1437-polymer dataset sourced from PoLyInfo — not republished. Data available from authors upon request. Benchmark Tg values extractable from body text."
       },
       {
         "source_id": "paper_uddin_2024",
@@ -89,7 +89,36 @@
           "tool": "pdfplumber word-coordinate reconstruction",
           "target": "Table 3 — cross-source Tg comparison for 6 benchmark polymers"
         },
-        "notes": "7174-polymer dataset from Liu et al. 2022 (KDD) — used but not republished. No supplementary CSV attached. Data available from authors upon request."
+        "notes": "7174-polymer dataset from Liu et al. (KDD 2022) — used but not republished. No supplementary CSV attached. Data available from authors upon request."
+      },
+      {
+        "source_id": "paper_rasulev_2024",
+        "name": "Rasulev B. et al. — Machine learning analysis of a large set of homopolymers to predict glass transition temperatures",
+        "source_type": "journal_article",
+        "url": "https://doi.org/10.1038/s42004-024-01305-0",
+        "doi": "10.1038/s42004-024-01305-0",
+        "access_status": "open_access",
+        "access_method": "publisher PDF download (CC BY 4.0); Supplementary Data 1 download from Nature page",
+        "access_date": "2026-05-25",
+        "license": "CC-BY-4.0",
+        "expected_data_volume": "medium",
+        "estimated_records": 902,
+        "available_data_types": [
+          "supplementary_data",
+          "tables"
+        ],
+        "expected_fields": [
+          "polymer_name",
+          "repeat_unit_smiles",
+          "tg_value",
+          "tg_unit"
+        ],
+        "extraction_strategy": {
+          "recommended_method": "api",
+          "tool": "pandas.read_csv() or pandas.read_excel() on Supplementary Data 1",
+          "target": "Supplementary Data 1 — 902 unique homopolymers with SMILES and experimental Tg"
+        },
+        "notes": "902 unique homopolymers assembled from public sources, rigorously deduplicated. Data independently collected by authors — not a PoLyInfo copy. Best open structured source for this project."
       }
     ],
     "databases": [
@@ -120,38 +149,9 @@
         "extraction_strategy": {
           "recommended_method": "manual",
           "tool": "browser GUI export",
-          "target": "gap-filling for polymer classes absent from other sources"
+          "target": "gap-filling for polymer classes absent from paper sources"
         },
-        "notes": "Primary authoritative source of experimental Tg data. ToS explicitly prohibits automated access. Max ~50 records per export session. Registration required."
-      }
-    ],
-    "github_repositories": [
-      {
-        "source_id": "gh_figotj_polymer_tg",
-        "name": "figotj/Polymer_Tg_ — Conjugated polymer Tg dataset",
-        "source_type": "github_repository",
-        "url": "https://github.com/figotj/Polymer_Tg_",
-        "doi": "",
-        "access_status": "open_access",
-        "access_method": "GitHub HTML page — rawLines JSON payload extraction via requests + regex",
-        "access_date": "2026-05-25",
-        "license": "MIT",
-        "expected_data_volume": "low",
-        "estimated_records": 32,
-        "available_data_types": [
-          "txt"
-        ],
-        "expected_fields": [
-          "repeat_unit_smiles",
-          "tg_value",
-          "tg_unit"
-        ],
-        "extraction_strategy": {
-          "recommended_method": "github_payload",
-          "tool": "requests + re.search on rawLines JSON array",
-          "target": "Data/32_Conjugate_Polymer.txt — tab-separated Tg (°C) and SMILES"
-        },
-        "notes": "32 conjugated polymers. Tg in degrees C — convert to K. Raw file returns 403; extract from rendered HTML page via rawLines payload. Original data from PoLyInfo — cite both."
+        "notes": "Primary authoritative source of experimental Tg. ToS explicitly prohibits automated access. Max ~50 records per export session. Registration required. Copyright © NIMS."
       }
     ],
     "aggregators": [
@@ -192,7 +192,7 @@
         "access_method": "direct CSV download from Zenodo",
         "access_date": "2026-05-25",
         "license": "open",
-        "expected_data_volume": "high",
+        "expected_data_volume": "medium",
         "estimated_records": 1000,
         "available_data_types": [
           "csv"
@@ -207,7 +207,7 @@
           "tool": "pandas.read_csv()",
           "target": "LAMALAB_CURATED_Tg_structured_polymerclass_with_embeddings.csv (43.6 MB)"
         },
-        "notes": "Curated dataset with PSMILES, Tg values, reliability scores, standard deviation, and polymer class. Use for cross-validation only — always check provenance column before treating as independent source. Related repo: github.com/lamalab-org/PolyMetriX."
+        "notes": "Curated dataset with PSMILES, Tg values, reliability scores, standard deviation, and polymer class. Use for cross-validation only — check provenance column before treating as independent source. Related repo: github.com/lamalab-org/PolyMetriX."
       }
     ]
   }
