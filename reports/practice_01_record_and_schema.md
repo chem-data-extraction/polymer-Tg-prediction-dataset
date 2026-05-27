@@ -8,6 +8,21 @@ Polymer Glass Transition Temperature (Tg) Prediction Dataset.
 
 Collect experimentally reported glass transition temperatures (Tg) for synthetic polymers defined by their SMILES repeat unit, for downstream structure–property modeling and cross-source comparison of Tg values across polymer families.
 
+## Polymer classes in scope
+
+| Class | Examples | Typical Tg range | 
+|-------|-------|----------|
+| Vinyl polymers | Polystyrene, PMMA, PVC, PVA, PAN | 200–430 K |
+| Polyesters | PET, PLA, PCL, PBT | 200–350 K |
+| Polyamides | Nylon-6, Nylon-6,6 | 320–380 K |
+| Polycarbonates | PC (bisphenol A) | 410–430 K |
+| Polyimides | PMDA-ODA, BPDA-based, fluorene-based | 500–700 K |
+| Polyethers | PEO, PPO, PEEK | 150–420 K |
+| Conjugated polymers | PTh, PPV, P3HT | 300–500 K |
+| Silicones | PDMS | 145–155 K |
+
+**Out of scope:** biopolymers (proteins, cellulose, DNA), crosslinked/thermoset polymers, inorganic polymers, polymer composites and blends with fillers.
+
 ## One-record definition
 
 **One record** = one experimentally reported Tg measurement for one polymer (defined by its repeat unit SMILES) under specific measurement conditions from one identified source (one row in `data/processed/dataset.csv`).
@@ -16,20 +31,21 @@ Collect experimentally reported glass transition temperatures (Tg) for synthetic
 
 | Example | Why it counts |
 |---------|----------------|
-| Tg = 373 K for polystyrene (CC(c1ccccc1)), Table 1, Chen 2021, DSC, 10 K/min, N2 | Single measurement + SMILES + method + source |
-| Tg = 126 °C for conjugated polymer (SMILES: C12=NSN…) from figotj/Polymer_Tg_ GitHub repo | Single measurement + SMILES + identified source |
-| Tg = 378 K for PMMA (CC(C)(C(=O)OC)), Fatriansyah 2024, Table 2 | Single measurement + SMILES + source |
-| Tg = 354 K for PVC (CC(Cl)), PoLyInfo manual export, DSC | Single measurement + SMILES + method |
+| Tg = 373 K for polystyrene (CC(c1ccccc1)), Table 1, Chen 2021, DSC, 10 K/min, N2 | Single numeric value + SMILES + method + source |
+| Tg = 378 K for PMMA (CC(C)(C(=O)OC)), Fatriansyah 2024, Table 2 | Single numeric value + SMILES + source |
+| Tg = 354 K for PVC (CC(Cl)), PoLyInfo manual export, DSC | Single numeric value + SMILES + method |
+| Tg = 336 °C for polyimide DPPD-MBDAM, Abdulhamid 2022, Table 2, DSC, 10 °C/min, N2 | Single numeric value + full conditions documented |
+| Tg > 420 °C for FDAn-PI film, Wang 2023, DMA — stored as tg_relation=">" tg_limit_value=420 | Limit value — stored with tg_relation field |
 
 ## Non-record examples
 
 | Example | Why it is not a record |
 |---------|-------------------------|
-| "Tg of polystyrene is around 100 °C" (no precise value, no source table) | Vague statement, not a single identified measurement |
-| Tg from MD simulation or group-contribution estimation | Not experimental; out of scope |
-| Tg range "320–380 K" without a central value | Not a single numeric value |
+| "Tg of polystyrene is around 100 °C" (no table, no source) | Vague statement; not a single identified measurement |
+| Tg from MD simulation or group-contribution model | Not experimental; out of scope |
 | Polystyrene Tg without knowing which source reported it | Missing provenance — cannot assign source_id |
 | Tg for PS/PMMA blend without composition specified | Composition required for non-pure system |
+| Tg for crosslinked epoxy resin | Crosslinked polymer — Tg depends on crosslink density, not repeat unit alone |
 
 ## Dataset fields
 
@@ -38,12 +54,13 @@ See `specs/dataset_schema.json` for full definitions. Summary:
 | Field | Type | Required | Notes |
 |-------|-------|----------|--------|
 | `record_id` | string | yes | Stable unique ID, e.g. `rec_tg_ps_chen2021_pdf_001` |
-| `polymer_name` | string | yes | Name as given in source |
+| `polymer_name` | string | yes | Name as given in source; expand abbreviations in notes |
 | `repeat_unit_smiles` | string | yes | SMILES with * markers; canonicalize via RDKit |
-| `polymer_class` | string | yes | homopolymer / copolymer / conjugated_polymer / other |
-| `tg_value` | number | yes | Numeric, in tg_unit |
-| `tg_unit` | string | yes | K or C (as reported) |
-| `tg_value_K` | number | yes | Normalized to Kelvin for comparison |
+| `polymer_class` | string | yes | See allowed values in schema |
+!!| `tg_value` | number | yes | Numeric, in tg_unit |
+| `tg_unit` | string | yes | K or C (as reported); converted to K at cleaning stage |
+| `tg_relation` | string | optional | > / < / >= / <= / ~ / not_observed — for limit reports |
+| `tg_limit_value` | number | optional | Boundary value paired with tg_relation |
 | `tg_uncertainty` | number | optional | ±σ if reported |
 | `measurement_method` | string | yes | DSC / DMA / dilatometry / TMA / other / unknown |
 | `heating_rate_K_min` | number | optional | Typically 10 K/min for DSC |
