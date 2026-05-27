@@ -21,7 +21,9 @@ Collect experimentally reported glass transition temperatures (Tg) for synthetic
 | Conjugated polymers | PTh, PPV, P3HT | 300–500 K |
 | Silicones | PDMS | 145–155 K |
 
-**Out of scope:** biopolymers (proteins, cellulose, DNA), crosslinked/thermoset polymers, inorganic polymers, polymer composites and blends with fillers.
+Out of scope: biopolymers (proteins, cellulose, DNA), crosslinked/thermoset polymers, inorganic polymers, polymer composites and blends with fillers.
+Note: polyimides and other high-performance polymers regularly reach Tg of 600–700 K. These are valid records — the plausibility filter in Practice 5 uses 150–900 K.
+
 
 ## One-record definition
 
@@ -35,7 +37,7 @@ Collect experimentally reported glass transition temperatures (Tg) for synthetic
 | Tg = 378 K for PMMA (CC(C)(C(=O)OC)), Fatriansyah 2024, Table 2 | Single numeric value + SMILES + source |
 | Tg = 354 K for PVC (CC(Cl)), PoLyInfo manual export, DSC | Single numeric value + SMILES + method |
 | Tg = 336 °C for polyimide DPPD-MBDAM, Abdulhamid 2022, Table 2, DSC, 10 °C/min, N2 | Single numeric value + full conditions documented |
-| Tg > 420 °C for FDAn-PI film, Wang 2023, DMA — stored as tg_relation=">" tg_limit_value=420 | Limit value — stored with tg_relation field |
+| Tg > 420 °C for FDAn-PI film, Wang 2023, DMA — stored as tg_relation=">" tg_limit_value=420 | Limit value — stored with tg_relation and tg_limit_value |
 
 ## Non-record examples
 
@@ -57,21 +59,21 @@ See `specs/dataset_schema.json` for full definitions. Summary:
 | `polymer_name` | string | yes | Name as given in source; expand abbreviations in notes |
 | `repeat_unit_smiles` | string | yes | SMILES with * markers; canonicalize via RDKit |
 | `polymer_class` | string | yes | See allowed values in schema |
-!!| `tg_value` | number | yes | Numeric, in tg_unit |
+| `tg_value` | number | yes | Numeric, in tg_unit |
 | `tg_unit` | string | yes | K or C (as reported); converted to K at cleaning stage |
 | `tg_relation` | string | optional | > / < / >= / <= / ~ / not_observed — for limit reports |
-| `tg_limit_value` | number | optional | Boundary value paired with tg_relation |
-| `tg_uncertainty` | number | optional | ±σ if reported |
+| `tg_limit_value` | number | optional | Boundary value paired with tg_relation, in tg_unit |
+| `tg_std` | number | optional | ±σ in same unit as tg_value |
 | `measurement_method` | string | yes | DSC / DMA / dilatometry / TMA / other / unknown |
 | `heating_rate_K_min` | number | optional | Typically 10 K/min for DSC |
 | `atmosphere` | string | optional | N2 / air / Ar / vacuum |
 | `molecular_weight_g_mol` | number | optional | Often absent in ML datasets |
-| `mw_type` | string | optional | Mn / Mw — required if Mw present |
-| `source_id` | string | yes | Links to source_map.json |
-| `source_type` | string | yes | scientific_paper / database / github_repository / … |
-| `doi` | string | optional | DOI string when available |
-| `conflict_flag` | boolean | optional | True if another source gives Tg differing >10 K |
-| `extraction_method` | string | optional | pdf_table / pdf_text_regex / github_payload / … |
+| `mw_type` | string | optional | Mn / Mw — required if molecular_weight_g_mol present |
+| `source_id` | string | yes | Links to entry in specs/source_map.json |
+| `source_type` | string | yes | scientific_paper / database / curated_dataset / other |
+| `doi` | string | optional | DOI of source when available |
+| `conflict_flag` | boolean | optional | True if another source gives Tg differing > 10 K for same SMILES |
+| `extraction_method` | string | optional | pdf_table / pdf_text_regex / manual / api |
 | `notes` | string | optional | Curation notes and caveats |
 
 ## Ambiguous cases
@@ -79,9 +81,12 @@ See `specs/dataset_schema.json` for full definitions. Summary:
 | Situation | Decision |
 |-----------|-------------------------|
 | Same polymer measured at different heating rates (5 vs 10 K/min) | Separate records; record heating_rate_K_min in each |
-| Tg reported as a range "320–380 K" | Store null in tg_value; note range in notes field |
-| Same SMILES in paper and database with different Tg | Keep both records; set conflict_flag = True |
+| Tg reported as "above 300 K" or "not observed below 500 K" | tg_value = null, tg_relation = ">", tg_limit_value = 300 |
+| Tg reported as range "320–380 K" without central value | tg_value = null, tg_relation = "~", tg_limit_value = 350, note range in notes |
+| Tg > 573 K (300°C) — high-Tg polyimide or engineering polymer | Valid record; plausibility filter allows up to 900 K |
+| Same SMILES in two sources with different Tg, delta > 10 K | Keep both records; set conflict_flag = True |
 | Plasticized polymer (e.g. PVC + DOP) | Exclude unless plasticizer type and loading fraction both recorded |
 | Copolymer with unknown sequence distribution | Include with polymer_class = copolymer; note ambiguity in notes |
 | Polymer name given as abbreviation (PS, PMMA) | Expand to full name; store abbreviation in notes |
-| Tg reported as "above 300 K" without a number | Exclude; not a numeric value |
+| Measurement method not stated | Include with measurement_method = unknown |
+| DMA vs DSC for same polymer | Both records kept; measurement_method field distinguishes them |
