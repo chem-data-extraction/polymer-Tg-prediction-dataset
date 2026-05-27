@@ -1,7 +1,7 @@
 {
   "topic": "Polymer glass transition temperature (Tg) experimental measurements",
   "root_query": "polymer glass transition temperature Tg DSC experimental SMILES repeat unit dataset prediction",
-  "source_map_version": "0.3.0",
+  "source_map_version": "0.2.0",
   "source_groups": {
     "scientific_papers": [
       {
@@ -118,7 +118,67 @@
           "tool": "pandas.read_csv() or pandas.read_excel() on Supplementary Data 1",
           "target": "Supplementary Data 1 — 902 unique homopolymers with SMILES and experimental Tg"
         },
-        "notes": "902 unique homopolymers assembled from public sources, rigorously deduplicated. Data independently collected by authors — not a PoLyInfo copy. Best open structured source for this project."
+        "notes": "902 unique homopolymers assembled from public sources, rigorously deduplicated. Data independently collected by authors — not a PoLyInfo copy. Primary bulk source for this project."
+      },
+      {
+        "source_id": "paper_abdulhamid_2022",
+        "name": "Abdulhamid M.A. et al. — Synthesis and characterization of new polyimides from diphenylpyrene dianhydride and ortho methyl substituted diamines",
+        "source_type": "journal_article",
+        "url": "https://doi.org/10.3390/polym14091888",
+        "doi": "10.3390/polym14091888",
+        "access_status": "open_access",
+        "access_method": "publisher PDF download (CC BY 4.0)",
+        "access_date": "2026-05-27",
+        "license": "CC-BY-4.0",
+        "expected_data_volume": "low",
+        "estimated_records": 5,
+        "available_data_types": [
+          "tables",
+          "text"
+        ],
+        "expected_fields": [
+          "polymer_name",
+          "tg_value",
+          "tg_unit",
+          "measurement_method",
+          "heating_rate_K_min",
+          "atmosphere"
+        ],
+        "extraction_strategy": {
+          "recommended_method": "pdf_table",
+          "tool": "pdfplumber word-coordinate reconstruction",
+          "target": "Table 2 — thermal properties of polyimide series: Tg (°C), DSC, 10 °C/min, N2"
+        },
+        "notes": "Polyimide class (high Tg 336–400 °C, i.e. 609–673 K). Measurement conditions fully documented: DSC, 10 °C/min, N2. SMILES derived from structural formulas via PubChem or manual drawing."
+      },
+      {
+        "source_id": "paper_wang_2023",
+        "name": "Wang Z. et al. — Synthesis and Characterization of Organo-Soluble Polyimides Based on Polycondensation Chemistry of Fluorene-Containing Dianhydride",
+        "source_type": "journal_article",
+        "url": "https://doi.org/10.3390/polym15173549",
+        "doi": "10.3390/polym15173549",
+        "access_status": "open_access",
+        "access_method": "publisher PDF download (CC BY 4.0)",
+        "access_date": "2026-05-27",
+        "license": "CC-BY-4.0",
+        "expected_data_volume": "low",
+        "estimated_records": 4,
+        "available_data_types": [
+          "tables",
+          "text"
+        ],
+        "expected_fields": [
+          "polymer_name",
+          "tg_value",
+          "tg_unit",
+          "measurement_method"
+        ],
+        "extraction_strategy": {
+          "recommended_method": "pdf_table",
+          "tool": "pdfplumber word-coordinate reconstruction",
+          "target": "Table 3 — thermal properties: Tg (°C) by DMA, high-Tg polyimide films (>420 °C, i.e. >693 K)"
+        },
+        "notes": "Fluorene-based polyimide class, very high Tg > 420 °C (> 693 K) by DMA. SMILES derived from structural formulas. Measurement method is DMA — relevant for conflict detection with DSC-based sources."
       }
     ],
     "databases": [
@@ -154,6 +214,36 @@
         "notes": "Primary authoritative source of experimental Tg. ToS explicitly prohibits automated access. Max ~50 records per export session. Registration required. Copyright © NIMS."
       }
     ],
+    "datasets": [
+      {
+        "source_id": "ds_zenodo_lamalab_tg",
+        "name": "LamaLab — Curated Glass Transition Temperature for Polymers",
+        "source_type": "curated_dataset",
+        "url": "https://zenodo.org/records/15783761",
+        "doi": "",
+        "access_status": "open_access",
+        "access_method": "direct CSV download from Zenodo",
+        "access_date": "2026-05-25",
+        "license": "open",
+        "expected_data_volume": "medium",
+        "estimated_records": 1000,
+        "available_data_types": [
+          "csv"
+        ],
+        "expected_fields": [
+          "repeat_unit_smiles",
+          "tg_value",
+          "tg_unit",
+          "polymer_class"
+        ],
+        "extraction_strategy": {
+          "recommended_method": "api",
+          "tool": "pandas.read_csv()",
+          "target": "LAMALAB_CURATED_Tg_structured_polymerclass_with_embeddings.csv (43.6 MB)"
+        },
+        "notes": "Curated dataset with PSMILES, Tg values, reliability scores, standard deviation, and polymer class labels. Used as a primary data source. Check provenance column per record — if data originates from PoLyInfo or another database, cite the original source in addition to the Zenodo record. Related repo: github.com/lamalab-org/PolyMetriX."
+      }
+    ],
     "aggregators": [
       {
         "source_id": "agg_pubchem_api",
@@ -176,38 +266,9 @@
         "extraction_strategy": {
           "recommended_method": "api",
           "tool": "PubChemPy or requests",
-          "target": "polymer name → canonical SMILES — identifier resolution only"
+          "target": "polymer name to canonical SMILES — identifier resolution only"
         },
         "notes": "No Tg property available. Use only to resolve polymer names to canonical SMILES when SMILES is absent in the source."
-      }
-    ],
-    "ml_datasets": [
-      {
-        "source_id": "ml_zenodo_lamalab_tg",
-        "name": "LamaLab — Curated Glass Transition Temperature for Polymers",
-        "source_type": "ml_dataset",
-        "url": "https://zenodo.org/records/15783761",
-        "doi": "",
-        "access_status": "open_access",
-        "access_method": "direct CSV download from Zenodo",
-        "access_date": "2026-05-25",
-        "license": "open",
-        "expected_data_volume": "medium",
-        "estimated_records": 1000,
-        "available_data_types": [
-          "csv"
-        ],
-        "expected_fields": [
-          "repeat_unit_smiles",
-          "tg_value",
-          "tg_unit"
-        ],
-        "extraction_strategy": {
-          "recommended_method": "api",
-          "tool": "pandas.read_csv()",
-          "target": "LAMALAB_CURATED_Tg_structured_polymerclass_with_embeddings.csv (43.6 MB)"
-        },
-        "notes": "Curated dataset with PSMILES, Tg values, reliability scores, standard deviation, and polymer class. Use for cross-validation only — check provenance column before treating as independent source. Related repo: github.com/lamalab-org/PolyMetriX."
       }
     ]
   }
