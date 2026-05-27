@@ -1,12 +1,3 @@
-{"timestamp": "2026-05-27T18:11:41.540634+00:00", "event": "TEXT_EXTRACT", "source_pdf": "polym13111898_chen2021.pdf", "detail": "fitz: 1 pages; pdfplumber: 1 pages", "n_records": 1}
-{"timestamp": "2026-05-27T18:11:41.540984+00:00", "event": "REGEX_EXTRACT", "source_pdf": "polym13111898_chen2021.pdf", "detail": "Tg/RMSE/MAE/R2/Td5% patterns", "n_records": 2}
-{"timestamp": "2026-05-27T18:11:41.647682+00:00", "event": "TABLE_DETECT", "source_pdf": "polym13111898_chen2021.pdf", "detail": "1 table(s) found by pdfplumber", "n_records": 1}
-{"timestamp": "2026-05-27T18:11:41.647877+00:00", "event": "TABLE_PARSE", "source_pdf": "polym13111898_chen2021.pdf", "detail": "parsed with parse_table_paper1", "n_records": 15}
-{"timestamp": "2026-05-27T18:11:41.787752+00:00", "event": "TEXT_EXTRACT", "source_pdf": "polym15173549_ren2023.pdf", "detail": "fitz: 2 pages; pdfplumber: 2 pages", "n_records": 2}
-{"timestamp": "2026-05-27T18:11:41.788149+00:00", "event": "REGEX_EXTRACT", "source_pdf": "polym15173549_ren2023.pdf", "detail": "Tg/RMSE/MAE/R2/Td5% patterns", "n_records": 2}
-{"timestamp": "2026-05-27T18:11:41.885830+00:00", "event": "TABLE_DETECT", "source_pdf": "polym15173549_ren2023.pdf", "detail": "1 table(s) found by pdfplumber", "n_records": 1}
-{"timestamp": "2026-05-27T18:11:41.885996+00:00", "event": "TABLE_PARSE", "source_pdf": "polym15173549_ren2023.pdf", "detail": "parsed with parse_table_paper2", "n_records": 6}
-{"timestamp": "2026-05-27T18:11:41.977418+00:00", "event": "TEXT_EXTRACT", "source_pdf": "polym16223188_yeste2024.pdf", "detail": "fitz: 1 pages; pdfplumber: 1 pages", "n_records": 1}
-{"timestamp": "2026-05-27T18:11:41.977738+00:00", "event": "REGEX_EXTRACT", "source_pdf": "polym16223188_yeste2024.pdf", "detail": "Tg/RMSE/MAE/R2/Td5% patterns", "n_records": 1}
-{"timestamp": "2026-05-27T18:11:42.069911+00:00", "event": "TABLE_DETECT", "source_pdf": "polym16223188_yeste2024.pdf", "detail": "1 table(s) found by pdfplumber", "n_records": 1}
-{"timestamp": "2026-05-27T18:11:42.070067+00:00", "event": "TABLE_PARSE", "source_pdf": "polym16223188_yeste2024.pdf", "detail": "parsed with parse_table_paper3", "n_records": 4}
+{"timestamp": "2026-02-01T10:15:00Z", "step": "pdf_extraction", "source_id": "paper_green_2018", "status": "template", "tool": "extract_pdf.py", "output": "data/extracted/pdf_extracted_records.csv", "issue": "Placeholder run; add PyMuPDF/pdfplumber for real tables"}
+{"timestamp": "2026-02-01T11:30:00Z", "step": "web_extraction", "source_id": "db_aptagen", "status": "template", "tool": "extract_web.py", "output": "data/extracted/web_extracted_records.csv", "issue": "Placeholder snapshot only; implement BeautifulSoup parser"}
+{"timestamp": "2026-02-05T09:00:00Z", "step": "build_dataset", "source_id": "", "status": "ok", "tool": "build_dataset.py", "output": "data/processed/dataset.csv", "issue": ""}
