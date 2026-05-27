@@ -1,5 +1,5 @@
 {
-  "schema_version": "0.1.0",
+  "schema_version": "0.2.0",
   "dataset_title": "Polymer Glass Transition Temperature Dataset",
   "fields": [
     {
@@ -15,7 +15,7 @@
       "required": true,
       "description": "Common or IUPAC name of the polymer as given in the source.",
       "example": "Polystyrene",
-      "normalization_rule": "Preserve original name; add canonical alias in notes if differs."
+      "normalization_rule": "Preserve original name; expand abbreviations (PS → Polystyrene) in notes."
     },
     {
       "name": "repeat_unit_smiles",
@@ -35,8 +35,13 @@
         "homopolymer",
         "copolymer",
         "block_copolymer",
-        "blend",
         "conjugated_polymer",
+        "polyimide",
+        "polyester",
+        "polyamide",
+        "polycarbonate",
+        "polyether",
+        "silicone",
         "other"
       ]
     },
@@ -44,27 +49,42 @@
       "name": "tg_value",
       "type": "number",
       "required": true,
-      "description": "Tg value as reported in the source, in the unit given by tg_unit.",
+      "description": "Tg value as reported in the source, in the unit given by tg_unit. Null when Tg is reported only as a limit — use tg_relation and tg_limit_value instead.",
       "example": 373
     },
     {
       "name": "tg_unit",
       "type": "string",
       "required": true,
-      "description": "Unit of tg_value as reported in the source.",
+      "description": "Unit of tg_value or tg_limit_value as reported in the source.",
       "example": "K",
       "allowed_values": [
         "K",
         "C"
       ],
-      "normalization_rule": "Store as reported; compute tg_value_K separately."
+      "normalization_rule": "Store as reported. Unit conversion (C to K) is performed at the cleaning stage (Practice 5)."
     },
     {
-      "name": "tg_value_K",
+      "name": "tg_relation",
+      "type": "string",
+      "required": false,
+      "description": "Relational operator when Tg is reported as a bound rather than exact value, e.g. 'above 300 K' or 'not observed below 500 K'. Null when tg_value is present.",
+      "example": ">",
+      "allowed_values": [
+        ">",
+        "<",
+        ">=",
+        "<=",
+        "~",
+        "not_observed"
+      ]
+    },
+    {
+      "name": "tg_limit_value",
       "type": "number",
-      "required": true,
-      "description": "Tg converted to Kelvin for cross-source comparison. tg_value_K = tg_value if K; tg_value + 273.15 if C.",
-      "example": 373
+      "required": false,
+      "description": "Boundary value when Tg is reported as a limit. Used together with tg_relation. In tg_unit. Null when tg_value is present.",
+      "example": 300
     },
     {
       "name": "tg_uncertainty",
@@ -145,10 +165,10 @@
       "allowed_values": [
         "scientific_paper",
         "database",
-        "github_repository",
+        "curated_dataset",
         "supplementary_data",
         "handbook",
-        "ml_dataset"
+        "other"
       ]
     },
     {
@@ -174,10 +194,9 @@
       "allowed_values": [
         "pdf_table",
         "pdf_text_regex",
-        "web_scrape",
-        "github_payload",
         "manual",
-        "api"
+        "api",
+        "other"
       ]
     },
     {
@@ -185,7 +204,7 @@
       "type": "string",
       "required": false,
       "description": "Free-text curation notes, caveats, or provenance details.",
-      "example": "Tg from Table 1; heating rate 10 K/min inferred from methods section."
+      "example": "Tg from Table 2; heating rate 10 K/min inferred from methods section."
     }
   ]
 }
