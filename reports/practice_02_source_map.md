@@ -59,7 +59,7 @@ Currently empty. Candidates for future versions: PoLyInfo, PolymerGenome / Polym
 
 | source_id | terms of service  | extraction_method | data available |
 |-----------|----------|---------|-----|
-| paper_polym16020303 | CC BY — free use  | pdf_table | Table 1 — 5 records |
+| paper_polym16020303 | CC BY — free use  | pdf_table | Table 3 — 5 records |
 | paper_polym16223188 | CC BY — free use  | pdf_table | Table 3 — 4 records |
 | paper_polym15173549 | CC BY — free use  | pdf_table | Table 3 — 6 records |
 | agg_pubchem_api | public domain  | api | SMILES only |
