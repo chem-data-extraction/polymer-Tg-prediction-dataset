@@ -1,210 +1,106 @@
 {
   "schema_version": "0.2.0",
-  "dataset_title": "Polymer Glass Transition Temperature Dataset",
+  "dataset_title": "Polymer Tg prediction dataset",
+  "record_description": "One row = one experimentally measured glass transition temperature (Tg) for a single polymer (or repeat unit) reported in a specific source.",
   "fields": [
     {
       "name": "record_id",
       "type": "string",
       "required": true,
-      "description": "Stable unique identifier for one Tg measurement record.",
-      "example": "rec_tg_polystyrene_chen2021_pdf_001"
+      "description": "Stable unique identifier for one Tg record. Generated as rec_{n} or rec_{polymer_short_name}_{source_id}.",
+      "example": "rec_btd_hfa_paper_polym16223188"
     },
     {
       "name": "polymer_name",
       "type": "string",
       "required": true,
-      "description": "Common or IUPAC name of the polymer as given in the source.",
-      "example": "Polystyrene",
-      "normalization_rule": "Preserve original name; expand abbreviations (PS → Polystyrene) in notes."
+      "description": "Polymer name as given in the source (preferred IUPAC or common name, e.g. 'poly(2,6-dimethyl-1,4-phenylene oxide)', 'BTD-HFA polyimide').",
+      "example": "BTD-HFA polyimide",
+      "normalization_rule": "Keep source name in this field; canonical IUPAC name (when available) goes in notes."
     },
     {
       "name": "repeat_unit_smiles",
       "type": "string",
       "required": true,
-      "description": "SMILES of the polymer repeat unit with * as polymerization markers.",
-      "example": "*CC(c1ccccc1)*",
-      "normalization_rule": "Canonicalize via RDKit; replace [*] with * before parsing."
+      "description": "SMILES (preferably PSMILES with [*] dummy atoms marking attachment points) of the polymer repeat unit. Used as the primary structural descriptor for ML.",
+      "example": "[*]Oc1c(C)cc(C)c1[*]",
+      "normalization_rule": "Canonicalised with RDKit; PSMILES dummy atoms written as [*]; left empty only if structure cannot be resolved (and noted in 'notes')."
     },
     {
       "name": "polymer_class",
       "type": "string",
       "required": true,
-      "description": "Broad structural class of the polymer.",
-      "example": "homopolymer",
-      "allowed_values": [
-        "homopolymer",
-        "copolymer",
-        "block_copolymer",
-        "conjugated_polymer",
-        "polyimide",
-        "polyester",
-        "polyamide",
-        "polycarbonate",
-        "polyether",
-        "silicone",
-        "other"
-      ]
+      "description": "Polymer family / chemistry class.",
+      "example": "polyimide",
+      "normalization_rule": "Controlled vocabulary: polyimide, polyamide, polyester, polycarbonate, polyolefin, polystyrene, poly(meth)acrylate, polyether, polyurethane, polysiloxane, polysulfone, polybenzimidazole, polyphenylene_oxide, polysaccharide, fluoropolymer, other. Lower_snake_case."
     },
     {
       "name": "tg_value",
-      "type": "number",
+      "type": "float",
       "required": true,
-      "description": "Tg value as reported in the source, in the unit given by tg_unit. Null when Tg is reported only as a limit — use tg_relation and tg_limit_value instead.",
-      "example": 373
+      "description": "Reported glass transition temperature value as a number.",
+      "example": 355
     },
     {
       "name": "tg_unit",
       "type": "string",
       "required": true,
-      "description": "Unit of tg_value or tg_limit_value as reported in the source.",
-      "example": "K",
-      "allowed_values": [
-        "K",
-        "C"
-      ],
-      "normalization_rule": "Store as reported. Unit conversion (C to K) is performed at the cleaning stage (Practice 5)."
+      "description": "Unit of the Tg value as reported in the source.",
+      "example": "C",
+      "normalization_rule": "Controlled vocabulary: 'C' (degrees Celsius) or 'K' (kelvin). Internal conversion to K is performed in cleaning step; raw unit is preserved here."
     },
     {
-      "name": "tg_relation",
-      "type": "string",
+      "name": "tg_std",
+      "type": "float",
       "required": false,
-      "description": "Relational operator when Tg is reported as a bound rather than exact value, e.g. 'above 300 K' or 'not observed below 500 K'. Null when tg_value is present.",
-      "example": ">",
-      "allowed_values": [
-        ">",
-        "<",
-        ">=",
-        "<=",
-        "~",
-        "not_observed"
-      ]
-    },
-    {
-      "name": "tg_limit_value",
-      "type": "number",
-      "required": false,
-      "description": "Boundary value when Tg is reported as a limit. Used together with tg_relation. In tg_unit. Null when tg_value is present.",
-      "example": 300
-    },
-    {
-      "name": "tg_uncertainty",
-      "type": "number",
-      "required": false,
-      "description": "Reported standard deviation or uncertainty in the same unit as tg_value.",
+      "description": "Reported standard deviation or uncertainty of Tg (same unit as tg_value). Left empty if not reported.",
       "example": 2
     },
     {
       "name": "measurement_method",
       "type": "string",
       "required": true,
-      "description": "Experimental technique used to measure Tg.",
+      "description": "Experimental method used to measure Tg.",
       "example": "DSC",
-      "allowed_values": [
-        "DSC",
-        "DMA",
-        "dilatometry",
-        "TMA",
-        "other",
-        "unknown"
-      ]
-    },
-    {
-      "name": "heating_rate_K_min",
-      "type": "number",
-      "required": false,
-      "description": "Heating or cooling rate during DSC or DMA measurement, in K/min.",
-      "example": 10
-    },
-    {
-      "name": "atmosphere",
-      "type": "string",
-      "required": false,
-      "description": "Atmosphere during measurement.",
-      "example": "N2",
-      "allowed_values": [
-        "N2",
-        "air",
-        "Ar",
-        "vacuum",
-        "unknown"
-      ]
-    },
-    {
-      "name": "molecular_weight_g_mol",
-      "type": "number",
-      "required": false,
-      "description": "Number-average (Mn) or weight-average (Mw) molecular weight in g/mol.",
-      "example": 100000
-    },
-    {
-      "name": "mw_type",
-      "type": "string",
-      "required": false,
-      "description": "Type of molecular weight reported. Required when molecular_weight_g_mol is present.",
-      "example": "Mn",
-      "allowed_values": [
-        "Mn",
-        "Mw",
-        "Mv",
-        "unknown"
-      ]
+      "normalization_rule": "Controlled vocabulary: DSC (differential scanning calorimetry), DMA (dynamic mechanical analysis), TMA (thermomechanical analysis), dilatometry, dielectric_spectroscopy, simulation_MD, unknown. For computed/simulated values, use 'simulation_MD' and record details in 'notes'."
     },
     {
       "name": "source_id",
       "type": "string",
       "required": true,
-      "description": "Identifier linking this record to an entry in specs/source_map.json.",
-      "example": "paper_chen_2021"
+      "description": "Identifier of the source in specs/source_map.json (e.g. paper_polym16223188, ds_zenodo_lamalab_tg, agg_pubchem).",
+      "example": "paper_polym16223188"
     },
     {
       "name": "source_type",
       "type": "string",
       "required": true,
-      "description": "Category of the source this record came from.",
-      "example": "scientific_paper",
-      "allowed_values": [
-        "scientific_paper",
-        "database",
-        "curated_dataset",
-        "supplementary_data",
-        "handbook",
-        "other"
-      ]
+      "description": "Type of the source.",
+      "example": "paper",
+      "normalization_rule": "Controlled vocabulary: paper, supplementary, dataset, aggregator, database, github_repository."
     },
     {
       "name": "doi",
       "type": "string",
       "required": false,
-      "description": "Digital Object Identifier of the source when available.",
-      "example": "10.3390/polym13111898"
-    },
-    {
-      "name": "conflict_flag",
-      "type": "boolean",
-      "required": false,
-      "description": "True if another source reports a different Tg (delta > 10 K) for the same repeat_unit_smiles.",
-      "example": false
+      "description": "DOI of the source (paper or dataset). Empty for sources without a DOI.",
+      "example": "10.3390/polym16223188",
+      "normalization_rule": "Stored without the 'https://doi.org/' prefix; lowercase."
     },
     {
       "name": "extraction_method",
       "type": "string",
-      "required": false,
-      "description": "How the record was extracted from its source.",
-      "example": "pdf_table",
-      "allowed_values": [
-        "pdf_table",
-        "pdf_text_regex",
-        "manual",
-        "api",
-        "other"
-      ]
+      "required": true,
+      "description": "How the record was obtained from the source.",
+      "example": "manual_pdf",
+      "normalization_rule": "Controlled vocabulary: manual_pdf, pdf_table_extraction, web_scraping, api_query, dataset_download, manual_aggregator_lookup."
     },
     {
       "name": "notes",
       "type": "string",
       "required": false,
-      "description": "Free-text curation notes, caveats, or provenance details.",
-      "example": "Tg from Table 2; heating rate 10 K/min inferred from methods section."
+      "description": "Free text: ambiguities, alternative names, IUPAC name, measurement context (heating rate, sample preparation), data quality flags, conflicts with other sources, etc.",
+      "example": "Tg determined from DSC second heating at 10 C/min under N2; Mn = 39 kDa."
     }
   ]
 }
