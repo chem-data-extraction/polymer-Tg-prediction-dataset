@@ -1,275 +1,198 @@
 {
-  "topic": "Polymer glass transition temperature (Tg) experimental measurements",
-  "root_query": "polymer glass transition temperature Tg DSC experimental SMILES repeat unit dataset prediction",
-  "source_map_version": "0.2.0",
+  "topic": "Polymer Tg prediction dataset",
+  "root_query": "polymer glass transition temperature Tg measurement SMILES",
+  "source_map_version": "0.1.0",
   "source_groups": {
     "scientific_papers": [
       {
-        "source_id": "paper_chen_2021",
-        "name": "Chen G., Tao L., Li Y. — Predicting Polymers' Glass Transition Temperature by a Chemical Language Processing Model",
-        "source_type": "journal_article",
-        "url": "https://doi.org/10.3390/polym13111898",
-        "doi": "10.3390/polym13111898",
+        "source_id": "paper_polym16223188",
+        "name": "Pérez-Francisco et al. 2024 — Rigid alicyclic polyimide films based on BTD dianhydride",
+        "source_type": "paper",
+        "url": "https://www.mdpi.com/2073-4360/16/22/3188",
+        "doi": "10.3390/polym16223188",
+        "publisher": "MDPI / Polymers",
+        "publication_year": 2024,
         "access_status": "open_access",
-        "access_method": "publisher PDF download (CC BY 4.0)",
-        "access_date": "2026-05-25",
-        "license": "CC-BY-4.0",
+        "access_method": "PDF download from MDPI",
+        "access_date": "2026-05-28",
+        "license": "CC-BY-3.0",
         "expected_data_volume": "low",
-        "estimated_records": 12,
+        "estimated_records": 4,
         "available_data_types": [
-          "tables",
-          "text"
+          "polymer_name",
+          "monomer_structure",
+          "tg_value",
+          "measurement_method"
         ],
         "expected_fields": [
           "polymer_name",
           "repeat_unit_smiles",
+          "polymer_class",
           "tg_value",
           "tg_unit",
           "measurement_method"
         ],
         "extraction_strategy": {
-          "recommended_method": "pdf_table",
-          "tool": "pdfplumber word-coordinate reconstruction",
-          "target": "Table 1 — 12 benchmark polymers with SMILES and Tg (K)"
+          "recommended_method": "Manual PDF extraction: Tg values reported in Table 3 (Thermal analysis), polymer structures in Scheme 1/2; SMILES reconstructed from chemical structures using monomer structure plus repeat unit conventions.",
+          "tools": [
+            "pdfplumber or manual transcription",
+            "RDKit for SMILES canonicalisation"
+          ]
         },
-        "notes": "Table 1 contains SMILES and Tg for 12 benchmark polymers. Full training dataset of 283 polymers sourced from PoLyInfo — not republished. Code: github.com/figotj/RNN-Tg."
+        "notes": "Four BTD-based alicyclic polyimides: BTD-MIMA, BTD-HFA, BTD-FND, BTD-TPM. Tg in range 272–355 °C measured by DSC at 10 °C/min under N2. BTD-FND Tg could not be determined experimentally (>350 °C, close to decomposition) — flag in notes and consider exclusion."
       },
       {
-        "source_id": "paper_fatriansyah_2024",
-        "name": "Fatriansyah J.F. et al. — Prediction of Glass Transition Temperature of Polymers Using Simple Machine Learning",
-        "source_type": "journal_article",
-        "url": "https://doi.org/10.3390/polym16172464",
-        "doi": "10.3390/polym16172464",
+        "source_id": "paper_polym15173549",
+        "name": "Ren et al. 2023 — Fluorene-containing dianhydride polyimides with amide-bridged diamines (Tg > 400 °C)",
+        "source_type": "paper",
+        "url": "https://www.mdpi.com/2073-4360/15/17/3549",
+        "doi": "10.3390/polym15173549",
+        "publisher": "MDPI / Polymers",
+        "publication_year": 2023,
         "access_status": "open_access",
-        "access_method": "publisher PDF download (CC BY 4.0)",
-        "access_date": "2026-05-25",
-        "license": "CC-BY-4.0",
-        "expected_data_volume": "low",
-        "estimated_records": 9,
-        "available_data_types": [
-          "tables",
-          "text"
-        ],
-        "expected_fields": [
-          "polymer_name",
-          "tg_value",
-          "tg_unit",
-          "measurement_method"
-        ],
-        "extraction_strategy": {
-          "recommended_method": "pdf_text_regex",
-          "tool": "PyMuPDF + regex",
-          "target": "inline Tg values in Section 2; Table 2 contains model comparison metrics only"
-        },
-        "notes": "1437-polymer dataset sourced from PoLyInfo — not republished. Data available from authors upon request. Benchmark Tg values extractable from body text."
-      },
-      {
-        "source_id": "paper_uddin_2024",
-        "name": "Uddin M.J., Fan J. — Interpretable Machine Learning Framework to Predict the Glass Transition Temperature of Polymers",
-        "source_type": "journal_article",
-        "url": "https://doi.org/10.3390/polym16081049",
-        "doi": "10.3390/polym16081049",
-        "access_status": "open_access",
-        "access_method": "publisher PDF download (CC BY 4.0)",
-        "access_date": "2026-05-25",
+        "access_method": "PDF download from MDPI",
+        "access_date": "2026-05-28",
         "license": "CC-BY-4.0",
         "expected_data_volume": "low",
         "estimated_records": 6,
         "available_data_types": [
-          "tables",
-          "text"
-        ],
-        "expected_fields": [
           "polymer_name",
+          "monomer_structure",
           "tg_value",
-          "tg_unit"
-        ],
-        "extraction_strategy": {
-          "recommended_method": "pdf_table",
-          "tool": "pdfplumber word-coordinate reconstruction",
-          "target": "Table 3 — cross-source Tg comparison for 6 benchmark polymers"
-        },
-        "notes": "7174-polymer dataset from Liu et al. (KDD 2022) — used but not republished. No supplementary CSV attached. Data available from authors upon request."
-      },
-      {
-        "source_id": "paper_rasulev_2024",
-        "name": "Rasulev B. et al. — Machine learning analysis of a large set of homopolymers to predict glass transition temperatures",
-        "source_type": "journal_article",
-        "url": "https://doi.org/10.1038/s42004-024-01305-0",
-        "doi": "10.1038/s42004-024-01305-0",
-        "access_status": "open_access",
-        "access_method": "publisher PDF download (CC BY 4.0); Supplementary Data 1 download from Nature page",
-        "access_date": "2026-05-25",
-        "license": "CC-BY-4.0",
-        "expected_data_volume": "medium",
-        "estimated_records": 902,
-        "available_data_types": [
-          "supplementary_data",
-          "tables"
+          "measurement_method"
         ],
         "expected_fields": [
           "polymer_name",
           "repeat_unit_smiles",
-          "tg_value",
-          "tg_unit"
-        ],
-        "extraction_strategy": {
-          "recommended_method": "api",
-          "tool": "pandas.read_csv() or pandas.read_excel() on Supplementary Data 1",
-          "target": "Supplementary Data 1 — 902 unique homopolymers with SMILES and experimental Tg"
-        },
-        "notes": "902 unique homopolymers assembled from public sources, rigorously deduplicated. Data independently collected by authors — not a PoLyInfo copy. Primary bulk source for this project."
-      },
-      {
-        "source_id": "paper_abdulhamid_2022",
-        "name": "Abdulhamid M.A. et al. — Synthesis and characterization of new polyimides from diphenylpyrene dianhydride and ortho methyl substituted diamines",
-        "source_type": "journal_article",
-        "url": "https://doi.org/10.3390/polym14091888",
-        "doi": "10.3390/polym14091888",
-        "access_status": "open_access",
-        "access_method": "publisher PDF download (CC BY 4.0)",
-        "access_date": "2026-05-27",
-        "license": "CC-BY-4.0",
-        "expected_data_volume": "low",
-        "estimated_records": 5,
-        "available_data_types": [
-          "tables",
-          "text"
-        ],
-        "expected_fields": [
-          "polymer_name",
-          "tg_value",
-          "tg_unit",
-          "measurement_method",
-          "heating_rate_K_min",
-          "atmosphere"
-        ],
-        "extraction_strategy": {
-          "recommended_method": "pdf_table",
-          "tool": "pdfplumber word-coordinate reconstruction",
-          "target": "Table 2 — thermal properties of polyimide series: Tg (°C), DSC, 10 °C/min, N2"
-        },
-        "notes": "Polyimide class (high Tg 336–400 °C, i.e. 609–673 K). Measurement conditions fully documented: DSC, 10 °C/min, N2. SMILES derived from structural formulas via PubChem or manual drawing."
-      },
-      {
-        "source_id": "paper_wang_2023",
-        "name": "Wang Z. et al. — Synthesis and Characterization of Organo-Soluble Polyimides Based on Polycondensation Chemistry of Fluorene-Containing Dianhydride",
-        "source_type": "journal_article",
-        "url": "https://doi.org/10.3390/polym15173549",
-        "doi": "10.3390/polym15173549",
-        "access_status": "open_access",
-        "access_method": "publisher PDF download (CC BY 4.0)",
-        "access_date": "2026-05-27",
-        "license": "CC-BY-4.0",
-        "expected_data_volume": "low",
-        "estimated_records": 4,
-        "available_data_types": [
-          "tables",
-          "text"
-        ],
-        "expected_fields": [
-          "polymer_name",
+          "polymer_class",
           "tg_value",
           "tg_unit",
           "measurement_method"
         ],
         "extraction_strategy": {
-          "recommended_method": "pdf_table",
-          "tool": "pdfplumber word-coordinate reconstruction",
-          "target": "Table 3 — thermal properties: Tg (°C) by DMA, high-Tg polyimide films (>420 °C, i.e. >693 K)"
+          "recommended_method": "Manual PDF extraction: read the thermal property table; reconstruct repeat-unit SMILES from the depicted dianhydride/diamine pair."
         },
-        "notes": "Fluorene-based polyimide class, very high Tg > 420 °C (> 693 K) by DMA. SMILES derived from structural formulas. Measurement method is DMA — relevant for conflict detection with DSC-based sources."
-      }
-    ],
-    "databases": [
+        "notes": "Organo-soluble polyimides from a fluorene-containing dianhydride and amide-bridged diamines with Tg above 400 °C. Sample of high-Tg, optically transparent polyimides — useful upper-range diversity for the dataset."
+      },
       {
-        "source_id": "db_polyinfo",
-        "name": "PoLyInfo — NIMS Polymer Database",
-        "source_type": "database",
-        "url": "https://polymer.nims.go.jp/",
-        "doi": "",
-        "access_status": "registration_required",
-        "access_method": "manual GUI export only — automated scraping prohibited by Terms of Service",
-        "access_date": "2026-05-25",
-        "license": "NIMS non-commercial research terms",
-        "expected_data_volume": "high",
-        "estimated_records": 60000,
+        "source_id": "paper_polym16020303",
+        "name": "Lu et al. 2024 — DOPO-containing poly(2,6-dimethyl-1,4-phenylene oxide)s by oxidative coupling polymerization",
+        "source_type": "paper",
+        "url": "https://www.mdpi.com/2073-4360/16/2/303",
+        "doi": "10.3390/polym16020303",
+        "publisher": "MDPI / Polymers",
+        "publication_year": 2024,
+        "access_status": "open_access",
+        "access_method": "PDF download from MDPI",
+        "access_date": "2026-05-28",
+        "license": "CC-BY-4.0",
+        "expected_data_volume": "low",
+        "estimated_records": 5,
         "available_data_types": [
-          "structured_records",
-          "property_tables"
+          "polymer_name",
+          "monomer_structure",
+          "tg_value",
+          "measurement_method",
+          "molecular_weight"
         ],
         "expected_fields": [
           "polymer_name",
           "repeat_unit_smiles",
+          "polymer_class",
           "tg_value",
           "tg_unit",
-          "measurement_method",
-          "heating_rate_K_min"
+          "measurement_method"
         ],
         "extraction_strategy": {
-          "recommended_method": "manual",
-          "tool": "browser GUI export",
-          "target": "gap-filling for polymer classes absent from paper sources"
+          "recommended_method": "Manual PDF extraction: Tg values from DSC heating curves (Figure 6) and Table 4; structures from Scheme 1."
         },
-        "notes": "Primary authoritative source of experimental Tg. ToS explicitly prohibits automated access. Max ~50 records per export session. Registration required. Copyright © NIMS."
+        "notes": "Four DOPO−R−PPO polymers (R = Me, C11, Ph, Bz) plus commercial reference PPO® SA90 (Tg = 139.2 °C). Tg range 157.8–183.2 °C, DSC at 10 °C/min. PPO® SA90 may be excluded or kept as reference, decision to be documented in notes."
       }
     ],
+    "supplementary_materials": [],
     "datasets": [
       {
         "source_id": "ds_zenodo_lamalab_tg",
-        "name": "LamaLab — Curated Glass Transition Temperature for Polymers",
-        "source_type": "curated_dataset",
+        "name": "LAMALAB Curated Glass Transition Temperature for Polymers (Zenodo)",
+        "source_type": "dataset",
         "url": "https://zenodo.org/records/15783761",
-        "doi": "",
+        "doi": "10.5281/zenodo.15783761",
+        "version": "v6",
+        "publisher": "Zenodo (Friedrich Schiller University Jena, LAMALAB)",
+        "publication_year": 2025,
+        "creators": [
+          "Kunchapu, Sreekanth",
+          "Jablonka, Kevin Maik"
+        ],
         "access_status": "open_access",
-        "access_method": "direct CSV download from Zenodo",
-        "access_date": "2026-05-25",
-        "license": "open",
-        "expected_data_volume": "medium",
-        "estimated_records": 1000,
+        "access_method": "Direct file download from Zenodo (HTTPS)",
+        "access_date": "2026-05-28",
+        "license": "CC-BY-4.0",
+        "file_path": "LAMALAB_CURATED_Tg_structured_polymerclass_with_embeddings.csv",
+        "file_size_mb": 43.6,
+        "expected_data_volume": "high",
+        "estimated_records": "several thousand polymer entries (CSV, 43.6 MB)",
         "available_data_types": [
-          "csv"
+          "polymer_identity",
+          "PSMILES",
+          "tg_value",
+          "tg_range",
+          "tg_std",
+          "reliability_flag",
+          "polymer_class",
+          "hierarchical_features"
         ],
         "expected_fields": [
+          "polymer_name",
           "repeat_unit_smiles",
+          "polymer_class",
           "tg_value",
           "tg_unit",
-          "polymer_class"
+          "tg_std",
+          "measurement_method"
         ],
         "extraction_strategy": {
-          "recommended_method": "api",
-          "tool": "pandas.read_csv()",
-          "target": "LAMALAB_CURATED_Tg_structured_polymerclass_with_embeddings.csv (43.6 MB)"
+          "recommended_method": "Download CSV from Zenodo. Read with pandas. Map columns: PSMILES → repeat_unit_smiles, Tg → tg_value (already in °C), Tg_std → tg_std, polymer_class → polymer_class (re-mapped to our controlled vocabulary). Each row already corresponds to one polymer/Tg entry.",
+          "tools": [
+            "pandas",
+            "RDKit (for PSMILES canonicalisation)"
+          ]
         },
-        "notes": "Curated dataset with PSMILES, Tg values, reliability scores, standard deviation, and polymer class labels. Used as a primary data source. Check provenance column per record — if data originates from PoLyInfo or another database, cite the original source in addition to the Zenodo record. Related repo: github.com/lamalab-org/PolyMetriX."
+        "notes": "Primary bulk source for the dataset. Provides hierarchical features (backbone, side chain, full polymer). The dataset is itself curated from primary literature, so all derived records keep a pointer back to ds_zenodo_lamalab_tg as their source_id and inherit its CC-BY-4.0 license. Risk of duplicate entries with the three MDPI papers must be checked in cleaning."
       }
     ],
     "aggregators": [
       {
-        "source_id": "agg_pubchem_api",
-        "name": "PubChem PUG-REST API",
+        "source_id": "agg_pubchem",
+        "name": "PubChem (NCBI)",
         "source_type": "aggregator",
-        "url": "https://pubchem.ncbi.nlm.nih.gov/",
+        "url": "https://pubchem.ncbi.nlm.nih.gov",
         "doi": "",
+        "publisher": "NCBI, U.S. National Library of Medicine",
         "access_status": "open_access",
-        "access_method": "REST API — name-to-SMILES lookup",
-        "access_date": "2026-05-25",
-        "license": "public domain (NIH)",
-        "expected_data_volume": "metadata_only",
-        "estimated_records": 0,
+        "access_method": "REST API (PUG-REST) and PUG-View; web search interface",
+        "access_date": "2026-05-28",
+        "license": "Public domain (PubChem data are free for any use; individual source records may carry their own license)",
+        "expected_data_volume": "metadata only (not a primary Tg source for most polymers)",
+        "estimated_records": "lookup service for monomers / repeat units, not bulk Tg records",
         "available_data_types": [
-          "json"
+          "compound_identifiers",
+          "canonical_smiles",
+          "iupac_name",
+          "synonyms",
+          "experimental_properties"
         ],
         "expected_fields": [
+          "polymer_name",
           "repeat_unit_smiles"
         ],
         "extraction_strategy": {
-          "recommended_method": "api",
-          "tool": "PubChemPy or requests",
-          "target": "polymer name to canonical SMILES — identifier resolution only"
+          "recommended_method": "Use PUG-REST to resolve monomer / polymer common names to canonical SMILES and IUPAC names. For each candidate polymer, query the monomer (e.g. 'bisphenol A', '2,6-dimethylphenol') and reconstruct the repeat-unit SMILES manually. PubChem is also used to confirm the IUPAC name written into 'notes'."
         },
-        "notes": "No Tg property available. Use only to resolve polymer names to canonical SMILES when SMILES is absent in the source."
+        "notes": "Used for identifier and SMILES normalisation, not as a primary Tg source. PubChem rarely lists polymer Tg directly; it provides monomer SMILES that are then assembled into repeat-unit (P)SMILES. Acts as the canonical 'name → structure' resolver across all other sources."
       }
-    ]
+    ],
+    "github_repositories": [],
+    "ml_datasets": []
   }
 }
