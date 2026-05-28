@@ -1,21 +1,22 @@
 {
   "project_id": "polymer_tg_prediction",
-  "project_title": "Polymer Glass Transition Temperature Dataset",
+  "project_title": "Polymer Tg prediction dataset",
   "project_status": "in_progress",
-  "scientific_task": "Collect experimentally reported glass transition temperatures (Tg) for synthetic polymers defined by their SMILES repeat unit, for downstream structure–property modeling and cross-source comparison of Tg values.",
+  "scientific_task": "Collect polymers with experimentally measured glass transition temperature (Tg). Each record includes the polymer structure or repeat unit, material class, measurement context, and reported Tg value. The dataset is intended for comparing polymer families and for building a structure-property dataset to predict Tg from molecular or computed descriptors.",
   "record_definition": {
-    "one_record": "One experimentally reported Tg measurement for one polymer (defined by its repeat unit SMILES) under specific measurement conditions from one identified source."
+    "one_record": "One experimentally measured glass transition temperature (Tg) for a single polymer (or repeat unit) reported in a specific source, together with measurement context (method, unit, uncertainty)."
   },
   "main_entities": [
     "polymer",
+    "repeat_unit",
+    "polymer_class",
     "tg_measurement",
-    "measurement_conditions",
     "source"
   ],
   "final_dataset_path": "data/processed/dataset.csv",
   "schema_path": "specs/dataset_schema.json",
   "source_map_path": "specs/source_map.json",
   "created_by": "",
-  "created_date": "2026-05-25",
-  "version": "0.1.0"
+  "created_date": "2026-05-28",
+  "version": "0.2.0"
 }
