@@ -1,0 +1,106 @@
+{
+  "manifest_version": "0.1.0",
+  "created_date": "2026-05-28",
+  "description": "PDF extraction manifest for the three MDPI Polymers papers in the source map. Each entry specifies what to extract (Table 3 only for Practice 3), which pages to inspect, how many records are expected, and what columns the target table is known to contain.",
+  "tools": {
+    "primary_text": "PyMuPDF (fitz)",
+    "primary_table": "pdfplumber",
+    "fallback_table": "Camelot (lattice or stream depending on whether the PDF has visible cell borders)",
+    "rendering": "PyMuPDF page.get_pixmap() at zoom=2 for visual verification crops",
+    "language": "Python 3.10+"
+  },
+  "common_tg_value_regex": "Tg\\s*=?\\s*(?P<value>\\d{2,3}(?:\\.\\d+)?)\\s*°?\\s*C",
+  "targets": [
+    {
+      "source_id": "paper_polym16020303",
+      "doi": "10.3390/polym16020303",
+      "pdf_url": "https://www.mdpi.com/2073-4360/16/2/303/pdf",
+      "local_pdf_path": "data/raw/paper_polym16020303.pdf",
+      "target_table": "Table 3",
+      "target_table_caption_pattern": "(?i)Table\\s*3\\.?\\s*(Synthesis|Polymerization|Molecular weight|GPC)",
+      "expected_rows": 5,
+      "expected_polymer_labels": [
+        "DOPO-Me-PPO",
+        "DOPO-C11-PPO",
+        "DOPO-Ph-PPO",
+        "DOPO-Bz-PPO",
+        "PPO\u00ae SA90"
+      ],
+      "expected_table_columns": [
+        "Polymer",
+        "Mn (g/mol)",
+        "Mw (g/mol)",
+        "PDI",
+        "Tg (\u00b0C)"
+      ],
+      "measurement_method": "DSC",
+      "measurement_conditions": "DSC at 10 \u00b0C/min, heating to 300 \u00b0C, cooling to 40 \u00b0C, reheating; N\u2082 flow 50 mL/min. PPO\u00ae SA90 is a commercial reference, not synthesized in the study.",
+      "page_hint": "Page 6-7 of the article PDF (Results section 3.1.3 and 3.2). Table 3 sits near the DSC discussion and Figure 6 (DSC heating curves).",
+      "polymer_class": "polyphenylene_oxide",
+      "license": "CC-BY-4.0"
+    },
+    {
+      "source_id": "paper_polym16223188",
+      "doi": "10.3390/polym16223188",
+      "pdf_url": "https://www.mdpi.com/2073-4360/16/22/3188/pdf",
+      "local_pdf_path": "data/raw/paper_polym16223188.pdf",
+      "target_table": "Table 3",
+      "target_table_caption_pattern": "(?i)Table\\s*3\\.?\\s*(Thermal|TGA|Tg|Glass transition|FFV)",
+      "expected_rows": 4,
+      "expected_polymer_labels": [
+        "BTD-MIMA",
+        "BTD-HFA",
+        "BTD-FND",
+        "BTD-TPM"
+      ],
+      "expected_table_columns": [
+        "Polyimide",
+        "Td (\u00b0C)",
+        "Tg (\u00b0C)",
+        "Density (g/cm\u00b3)",
+        "FFV"
+      ],
+      "measurement_method": "DSC",
+      "measurement_conditions": "DSC Q2000 (TA Instruments) at 10 \u00b0C/min under N\u2082 in the range 50\u2013400 \u00b0C. BTD-FND Tg is reported as not numerically determinable (>350 \u00b0C, close to T_d onset).",
+      "page_hint": "Page 6 of the article PDF (Results section 3.2 Thermal Analysis), between the TGA thermograms and the density discussion.",
+      "polymer_class": "polyimide",
+      "license": "CC-BY-3.0",
+      "known_quality_flags": [
+        "BTD-FND Tg is qualitative (>350 \u00b0C) and must be stored with tg_value=null and a flag in notes; do NOT silently coerce to 350.0."
+      ]
+    },
+    {
+      "source_id": "paper_polym15173549",
+      "doi": "10.3390/polym15173549",
+      "pdf_url": "https://www.mdpi.com/2073-4360/15/17/3549/pdf",
+      "local_pdf_path": "data/raw/paper_polym15173549.pdf",
+      "target_table": "Table 3",
+      "target_table_caption_pattern": "(?i)Table\\s*3\\.?\\s*(Thermal|TGA|DMA|TMA|Tg|properties)",
+      "expected_rows": 6,
+      "expected_polymer_labels": [
+        "FLPI-1 (FDAn-FDAADA)",
+        "FLPI-2 (FDAn-ABTFMB)",
+        "FLPI-3 (FDAn-MABTFMB)",
+        "PI-ref1 (6FDA-FDAADA)",
+        "PI-ref2 (6FDA-ABTFMB)",
+        "PI-ref3 (6FDA-MABTFMB)"
+      ],
+      "expected_table_columns": [
+        "Sample",
+        "T5% (\u00b0C)",
+        "Tmax (\u00b0C)",
+        "Rw750 (%)",
+        "Tg (\u00b0C, DMA tan\u03b4 peak)",
+        "CTE (\u00d710\u207b\u2076/K)"
+      ],
+      "measurement_method": "DMA",
+      "measurement_conditions": "DMA Q800 (TA Instruments) in tensile mode at 5 \u00b0C/min and 1 Hz under N\u2082; Tg taken as the tan\u03b4 peak temperature.",
+      "page_hint": "Page 8-9 of the article PDF (Results section 3.2 Thermal Properties), near Figures 6 (TGA) and 7 (DMA).",
+      "polymer_class": "polyimide",
+      "license": "CC-BY-4.0",
+      "known_quality_flags": [
+        "User-provided task brief says 'Table 3 \u2014 6 records'. The paper text mentions Table 3 (TGA/DMA/TMA combined) and also Table 4 (DMA + optical) for Tg; both tables contain Tg values from the same DMA tan\u03b4 experiment. Use Table 3 as the primary source as instructed; if Table 4 disagrees, log a row in extraction_log.jsonl and prefer Table 3."
+      ]
+    }
+  ]
+}
