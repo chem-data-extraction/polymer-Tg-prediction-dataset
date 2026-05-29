@@ -13,7 +13,7 @@
     {
       "name": "polymer_name",
       "type": "string",
-      "required": true,
+      "required": false,
       "description": "Polymer name as given in the source (preferred IUPAC or common name, e.g. 'poly(2,6-dimethyl-1,4-phenylene oxide)', 'BTD-HFA polyimide').",
       "example": "BTD-HFA polyimide",
       "normalization_rule": "Keep source name in this field; canonical IUPAC name (when available) goes in notes."
