@@ -1,55 +1,183 @@
 {
-  "web_extraction_version": "0.1.0",
-  "output_records_file": "data/extracted/web_extracted_records.csv",
-  "script": "scripts/extract_web.py",
-  "input_pages": [
-    {
-      "source_id": "db_aptagen",
-      "page_id": "aptagen_thrombin_entries",
-      "url": "https://example.org/aptamer-db/target/thrombin",
-      "access_date": "2026-02-01",
-      "access_status": "open_access",
-      "robots_notes": "robots.txt allows crawling of /aptamer-db/ with 1 req/s; respect terms of use.",
-      "selection_reason": "Structured HTML tables listing curated thrombin aptamer Kd values.",
-      "page_type": "database_browse_page",
-      "expected_content": "HTML table with columns: sequence, target, Kd, method",
-      "parser_plan": {
-        "tool": "requests + BeautifulSoup",
-        "selectors": {
-          "table": "table.binding-records",
-          "row": "tbody tr",
-          "sequence": "td.seq",
-          "target": "td.target",
-          "value": "td.kd",
-          "unit": "td.unit"
-        }
+  "manifest_version": "0.1.0",
+  "created_date": "2026-05-29",
+  "description": "Web/dataset extraction manifest for Practice 4. Targets the LAMALAB Zenodo Tg dataset (bulk source) and the PubChem PUG-REST API (monomer SMILES lookups). Goal: ingest the Zenodo CSV into the dataset schema, resolve monomer SMILES for every polymer in Practice 3, and fill in repeat_unit_smiles where possible.",
+  "tools": {
+    "http": "requests (timeout 60s, polite User-Agent)",
+    "table": "pandas",
+    "chemistry": "RDKit (Chem.MolFromSmiles for canonicalisation, optional)",
+    "language": "Python 3.10+"
+  },
+  "sources": {
+    "zenodo": {
+      "source_id": "ds_zenodo_lamalab_tg",
+      "doi": "10.5281/zenodo.15783761",
+      "version": "v6 (July 2025)",
+      "creators": ["Kunchapu, Sreekanth", "Jablonka, Kevin Maik"],
+      "publisher": "Friedrich Schiller University Jena",
+      "license": "CC-BY-4.0",
+      "csv_url": "https://zenodo.org/records/15783761/files/LAMALAB_CURATED_Tg_structured_polymerclass_with_embeddings.csv?download=1",
+      "expected_md5": "31400a5f499394e3a6e0658488a464bb",
+      "file_size_mb": 43.6,
+      "local_path": "data/raw/lamalab_tg_dataset.csv",
+      "expected_rowcount_min": 7000,
+      "expected_rowcount_max": 8000,
+      "expected_key_columns": [
+        "PSMILES",
+        "labels.Exp_Tg(K)",
+        "meta.polymer",
+        "meta.polymer_class",
+        "meta.std",
+        "meta.source",
+        "meta.reliability",
+        "meta.tg_range",
+        "meta.num_of_points",
+        "meta.tg_values"
+      ],
+      "column_mapping": {
+        "meta.polymer":       "polymer_name",
+        "PSMILES":            "repeat_unit_smiles",
+        "meta.polymer_class": "polymer_class",
+        "labels.Exp_Tg(K)":   "tg_value",
+        "meta.std":           "tg_std",
+        "meta.source":        "notes_source",
+        "meta.reliability":   "notes_reliability",
+        "meta.tg_range":      "notes_tg_range",
+        "meta.num_of_points": "notes_num_of_points"
       },
-      "raw_snapshot_path": "data/raw/web/aptagen_thrombin_entries.html",
-      "extraction_status": "template_pending"
+      "defaults": {
+        "tg_unit":            "K",
+        "measurement_method": "unknown",
+        "source_id":          "ds_zenodo_lamalab_tg",
+        "source_type":        "dataset",
+        "doi":                "10.5281/zenodo.15783761",
+        "extraction_method":  "dataset_download"
+      },
+      "notes": [
+        "Tg is reported in Kelvin (labels.Exp_Tg(K)). Schema's tg_unit accepts both 'C' and 'K' — we keep K to avoid lossy conversion at extraction time; Practice 5 cleaning will convert to a single canonical unit if needed.",
+        "measurement_method is 'unknown' because the Zenodo dataset aggregates measurements from multiple sources, methods, and authors — the original method per row is not preserved.",
+        "meta.std is the standard deviation across the data points that contributed to this curated row (meta.num_of_points). Stored in tg_std as-is.",
+        "Original citation/source string is kept in 'notes' (notes_source) so that downstream users can trace each row to its original literature."
+      ]
     },
-    {
-      "source_id": "db_aptagen",
-      "page_id": "aptagen_lysozyme_entries",
-      "url": "https://example.org/aptamer-db/target/lysozyme",
-      "access_date": "2026-02-02",
-      "access_status": "open_access",
-      "robots_notes": "Same policy as thrombin browse page.",
-      "selection_reason": "Complements PDF sources for lysozyme aptamer records.",
-      "page_type": "database_browse_page",
-      "expected_content": "Paginated result list with affinity fields",
-      "parser_plan": {
-        "tool": "requests + BeautifulSoup",
-        "selectors": {
-          "table": "table.binding-records",
-          "row": "tbody tr",
-          "sequence": "td.seq",
-          "target": "td.target",
-          "value": "td.kd",
-          "unit": "td.unit"
-        }
+    "pubchem": {
+      "source_id": "agg_pubchem",
+      "license": "Public domain (NCBI)",
+      "rest_base": "https://pubchem.ncbi.nlm.nih.gov/rest/pug",
+      "rate_limit_policy": "PUG-REST: no more than 5 requests per second; no more than 400 requests per minute; no more than 300 seconds of total request time per minute",
+      "request_pause_seconds": 0.25,
+      "endpoints": {
+        "name_to_cid":           "/compound/name/{name}/cids/JSON",
+        "name_to_properties":    "/compound/name/{name}/property/CanonicalSMILES,IsomericSMILES,IUPACName,MolecularFormula/JSON",
+        "cid_to_properties":     "/compound/cid/{cid}/property/CanonicalSMILES,IsomericSMILES,IUPACName,MolecularFormula/JSON",
+        "cid_to_synonyms":       "/compound/cid/{cid}/synonyms/JSON"
       },
-      "raw_snapshot_path": "data/raw/web/aptagen_lysozyme_entries.html",
-      "extraction_status": "template_pending"
+      "monomer_queries": [
+        {
+          "label": "2,6-dimethylphenol",
+          "role": "ppo_monomer",
+          "queries": ["2,6-dimethylphenol", "2,6-Dimethylphenol", "2,6-xylenol"],
+          "appears_in_polymers": ["DOPO-Me-PPO", "DOPO-C11-PPO", "DOPO-Ph-PPO", "DOPO-Bz-PPO", "PPO\u00ae SA90"]
+        },
+        {
+          "label": "DOPO",
+          "role": "endgroup",
+          "queries": ["9,10-Dihydro-9-oxa-10-phosphaphenanthrene-10-oxide", "DOPO", "6H-Dibenz[c,e][1,2]oxaphosphorine 6-oxide"],
+          "appears_in_polymers": ["DOPO-Me-PPO", "DOPO-C11-PPO", "DOPO-Ph-PPO", "DOPO-Bz-PPO"]
+        },
+        {
+          "label": "BTD",
+          "role": "polyimide_dianhydride",
+          "queries": ["bicyclo[2.2.2]oct-7-ene-2,3,5,6-tetracarboxylic dianhydride", "Bicyclo[2.2.2]oct-7-ene-2,3,5,6-tetracarboxylic 2,3:5,6-dianhydride"],
+          "appears_in_polymers": ["BTD-MIMA", "BTD-HFA", "BTD-FND", "BTD-TPM"]
+        },
+        {
+          "label": "MIMA",
+          "role": "polyimide_diamine",
+          "queries": ["4,4'-Methylenebis(2-isopropyl-6-methylaniline)", "4,4'-methylenebis(2-isopropyl-6-methylaniline)", "M-MIPA"],
+          "appears_in_polymers": ["BTD-MIMA"]
+        },
+        {
+          "label": "HFA",
+          "role": "polyimide_diamine",
+          "queries": ["4,4'-(Hexafluoroisopropylidene)dianiline", "Bis(4-aminophenyl)hexafluoropropane", "2,2-Bis(4-aminophenyl)hexafluoropropane"],
+          "appears_in_polymers": ["BTD-HFA"]
+        },
+        {
+          "label": "FND",
+          "role": "polyimide_diamine",
+          "queries": ["4,4'-(9-Fluorenylidene)dianiline", "9,9-Bis(4-aminophenyl)fluorene"],
+          "appears_in_polymers": ["BTD-FND"]
+        },
+        {
+          "label": "TPM",
+          "role": "polyimide_diamine",
+          "queries": ["4,4'-Diaminotriphenylmethane", "bis(4-aminophenyl)phenylmethane"],
+          "appears_in_polymers": ["BTD-TPM"]
+        },
+        {
+          "label": "6FDA",
+          "role": "polyimide_dianhydride",
+          "queries": ["4,4'-(Hexafluoroisopropylidene)diphthalic anhydride", "2,2-Bis(3,4-dicarboxyphenyl)hexafluoropropane dianhydride"],
+          "appears_in_polymers": ["PI-ref1 (6FDA-FDAADA)", "PI-ref2 (6FDA-ABTFMB)", "PI-ref3 (6FDA-MABTFMB)"]
+        },
+        {
+          "label": "FDAn",
+          "role": "polyimide_dianhydride",
+          "queries": ["9,9-Bis(3,4-dicarboxyphenyl)fluorene dianhydride", "9,9-Bis(3,4-dicarboxyphenyl)fluorene 3,3',4,4'-dianhydride"],
+          "appears_in_polymers": ["FLPI-1 (FDAn-FDAADA)", "FLPI-2 (FDAn-ABTFMB)", "FLPI-3 (FDAn-MABTFMB)"]
+        },
+        {
+          "label": "FDAADA",
+          "role": "polyimide_diamine",
+          "queries": ["9,9-Bis[4-(4-aminobenzamide)phenyl]fluorene"],
+          "appears_in_polymers": ["FLPI-1 (FDAn-FDAADA)", "PI-ref1 (6FDA-FDAADA)"],
+          "expected_pubchem_status": "likely_not_found"
+        },
+        {
+          "label": "ABTFMB",
+          "role": "polyimide_diamine",
+          "queries": ["2,2'-Bis(trifluoromethyl)-4,4'-bis[4-(4-aminobenzamide)]biphenyl"],
+          "appears_in_polymers": ["FLPI-2 (FDAn-ABTFMB)", "PI-ref2 (6FDA-ABTFMB)"],
+          "expected_pubchem_status": "likely_not_found"
+        },
+        {
+          "label": "MABTFMB",
+          "role": "polyimide_diamine",
+          "queries": ["2,2'-Bis(trifluoromethyl)-4,4'-bis[4-(4-amino-3-methyl)benzamide]biphenyl"],
+          "appears_in_polymers": ["FLPI-3 (FDAn-MABTFMB)", "PI-ref3 (6FDA-MABTFMB)"],
+          "expected_pubchem_status": "likely_not_found"
+        }
+      ]
     }
-  ]
+  },
+  "fill_smiles_strategy": {
+    "description": "For each of the 15 records produced in Practice 3, fill repeat_unit_smiles by the following ordered strategy:",
+    "rules": [
+      {
+        "rule_id": "1_textbook_ppo",
+        "condition": "Polymer is one of the five DOPO-R-PPO variants or PPO\u00ae SA90",
+        "action": "Assign the canonical PPO backbone PSMILES '[*]Oc1c(C)cc(C)c1[*]'. DOPO end-functionality is not part of the repeat unit; it is recorded in 'notes'.",
+        "smiles_source_tag": "textbook_ppo"
+      },
+      {
+        "rule_id": "2_zenodo_match",
+        "condition": "Polymer name appears in the Zenodo 'meta.polymer' column within a fuzzy match AND Tg is within \u00b115 K of any Zenodo entry for that match",
+        "action": "Adopt the Zenodo 'PSMILES' value verbatim and store the matched Zenodo row id in 'notes'.",
+        "smiles_source_tag": "zenodo_match"
+      },
+      {
+        "rule_id": "3_polyimide_assembly",
+        "condition": "Polymer is a polyimide whose monomers are resolvable via PubChem or curated table",
+        "action": "Build PSMILES of the imide repeat unit programmatically via a dianhydride + diamine SMARTS reaction (RDKit). Resulting PSMILES has '[*]' markers at the two chain-extension nitrogens.",
+        "smiles_source_tag": "polyimide_assembled_from_monomers",
+        "fallback_if_assembly_fails": "Leave repeat_unit_smiles empty, store both monomer SMILES in notes, set review_status='needs_polymer_assembly'."
+      },
+      {
+        "rule_id": "4_no_resolution",
+        "condition": "Polymer not resolved by rules 1-3",
+        "action": "Leave repeat_unit_smiles empty, set review_status='unresolved_smiles', store everything we know in notes."
+      }
+    ]
+  }
 }
