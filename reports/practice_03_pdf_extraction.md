@@ -59,7 +59,7 @@ Pages in bold contain Table-3 cells used in extraction. The other pages are list
 2. `find_table3_pages()` — for each paper, PyMuPDF iterates pages and matches the per-paper caption regex from `specs/pdf_extraction_manifest.json` (`(?i)Table\s*3\.?\s*(Synthesis|Thermal|Tg|properties|...)`); returns the 1-based page numbers.
 3. `extract_table3_rows()` — `pdfplumber.open(pdf).pages[p-1].extract_tables()`; keeps tables whose header row contains the literal "Tg". For MDPI tables without ruling, this returns empty and the script falls through.
 4. Curated fallback — `CURATED_TG_TABLE` is consulted; every row has been verified against the PyMuPDF text dump. The Tg-numeric-extraction regex `Tg\s*=?\s*(\d{2,3}(?:\.\d+)?)\s*°?\s*C` is exposed in the manifest as `common_tg_value_regex` for future automated re-extraction.
-5. `write_combined_csv()` — single output file `data/extracted/all_papers_table3.csv` with 15 records.
+5. `write_combined_csv()` — single output file `data/extracted/pdf_extracted_records.csv` with 15 records.
 6. `append_log()` — every extracted record is appended as a JSONL event to `data/extracted/extraction_log.jsonl`.
 
 ## Extracted fields
@@ -110,10 +110,10 @@ The output CSV uses the 13 schema columns from `specs/dataset_schema.json` plus 
 | `data/raw/paper_polym16020303.pdf` | Lu et al. 2024, raw PDF (downloaded by `scripts/extract_pdf.py download_pdf()`) |
 | `data/raw/paper_polym16223188.pdf` | Pérez-Francisco et al. 2024, raw PDF |
 | `data/raw/paper_polym15173549.pdf` | Ren et al. 2023, raw PDF |
-| **`data/extracted/all_papers_table3.csv`** | **15 records** in the dataset schema + provenance — one combined file across all three papers. Per-source breakdown: 5 / 4 / 6 rows. |
+| **`data/extracted/pdf_extracted_records.csv`** | **15 records** in the dataset schema + provenance — one combined file across all three papers. Per-source breakdown: 5 / 4 / 6 rows. |
 | `data/extracted/extraction_log.jsonl` | One JSONL line per extracted record + per pipeline step event |
 
-**Per-record review_status counts (in `all_papers_table3.csv`):**
+**Per-record review_status counts (in `pdf_extracted_records.csv`):**
 
 ```
 verified_from_pdf : 14   (Tg cell read directly from Table 3)
