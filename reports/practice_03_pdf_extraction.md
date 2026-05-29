@@ -75,7 +75,7 @@ The output CSV uses the 13 schema columns from `specs/dataset_schema.json` plus 
 | `tg_value` | Table 3 Tg column | None except for **BTD-FND**, where the cell holds a literal `-`. The article says ">350 °C, not numerically determinable". The row is kept with `tg_value=NaN` and `review_status=qualitative_only` — explicitly **not** coerced to 350.0. |
 | `tg_unit` | derived from Table 3 caption / column header (°C in all three) | None. |
 | `tg_std` | not reported in any of the three Table 3's | Left empty for all 15 records. |
-| `measurement_method` | derived from the paper's methods section / Table 3 footnote | DSC for papers 1 and 2; **DMA** (tanδ peak) for paper 3 — this is the only paper using DMA, and the Table 3 column is explicitly labelled "Tg, DMA". |
+| `measurement_method` | derived from the paper's methods section / Table 3 footnote | DSC for papers 1 and 2; **DMA** (tanδ peak) for paper 3 — this is the only paper using DMA, and the Table 3 column is explicitly labelled "Tg, DMA". | 
 | `source_id` | `paper_polym{ID}` (matches `specs/source_map.json`) | — |
 | `source_type` | constant `"paper"` | — |
 | `doi` | constant per paper (from manifest) | — |
