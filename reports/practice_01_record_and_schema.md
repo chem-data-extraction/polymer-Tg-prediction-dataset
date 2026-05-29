@@ -50,7 +50,7 @@ See `specs/dataset_schema.json` for full definitions. Summary:
 | Field | Type | Required | Notes |
 |-------|-------|----------|--------|
 | `record_id` | string | yes | Stable unique ID |
-| `polymer_name` | string | yes | Name as given in source; expand abbreviations in notes |
+| `polymer_name` | string | optional | Name as given in source; expand abbreviations in notes |
 | `repeat_unit_smiles` | string | yes | SMILES with * markers; canonicalize via RDKit |
 | `polymer_class` | string | yes | Controlled vocabulary: polyimide, polyamide, polyester, polycarbonate, other. Lower snake_case. |
 | `tg_value` | number | yes | Numeric, in tg_unit |
