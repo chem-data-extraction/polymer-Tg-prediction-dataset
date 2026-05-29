@@ -1,4 +1,4 @@
-# Aptamer–protein binding dataset (project template)
+# Polymer Glass Transition Temperature (Tg) Prediction Dataset
 
 Publication-ready **dataset project template** for the course *Extraction and preparation of chemical information*. Students move from a research topic to a structured, validated dataset with documented sources, extraction steps, cleaning pipeline, reports, and citation metadata.
 
