@@ -1,0 +1,23 @@
+{
+  "checked_at": "2026-05-29T15:29:38.215844+00:00",
+  "user_agent": "PolymerTg/0.1",
+  "checks": [
+    {
+      "domain": "https://zenodo.org",
+      "sample_url": "https://zenodo.org/records/15783761/files/LAMALAB_CURATED_Tg_structured_polymerclass_with_embeddings.csv?download=1",
+      "robots_url": "https://zenodo.org/robots.txt",
+      "robots_status": "fetched",
+      "allowed": true,
+      "error": null,
+      "crawl_delay_seconds": 10
+    },
+    {
+      "domain": "https://pubchem.ncbi.nlm.nih.gov",
+      "sample_url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/aspirin/cids/JSON",
+      "robots_url": "https://pubchem.ncbi.nlm.nih.gov/robots.txt",
+      "robots_status": "fetched",
+      "allowed": false,
+      "error": null
+    }
+  ]
+}

@@ -1,0 +1,49 @@
+{
+  "url": "https://zenodo.org/records/15783761",
+  "fetched_at": "2026-05-29T15:29:43.096189+00:00",
+  "status": "scraped",
+  "scraped": {
+    "title": "Curated Glass Transition Temperature for Polymers",
+    "license": "CC-BY-4.0",
+    "version": "v6",
+    "file_url": "https://zenodo.org/records/15783761/files/LAMALAB_CURATED_Tg_structured_polymerclass_with_embeddings.csv?download=1",
+    "file_name": "LAMALAB_CURATED_Tg_structured_polymerclass_with_embeddings.csv",
+    "md5": "31400a5f499394e3a6e0658488a464bb",
+    "file_size_mb": 43.6
+  },
+  "manifest_expected": {
+    "doi": "15783761",
+    "license": "CC-BY-4.0",
+    "version": "v6",
+    "md5": "31400a5f499394e3a6e0658488a464bb",
+    "file_size_mb": 43.6
+  },
+  "diff": {
+    "doi": {
+      "manifest": "15783761",
+      "scraped": null,
+      "match": null
+    },
+    "license": {
+      "manifest": "CC-BY-4.0",
+      "scraped": "CC-BY-4.0",
+      "match": true
+    },
+    "version": {
+      "manifest": "v6",
+      "scraped": "v6",
+      "match": true
+    },
+    "md5": {
+      "manifest": "31400a5f499394e3a6e0658488a464bb",
+      "scraped": "31400a5f499394e3a6e0658488a464bb",
+      "match": true
+    },
+    "file_size_mb": {
+      "manifest": 43.6,
+      "scraped": 43.6,
+      "match": true
+    }
+  },
+  "html_snapshot": "data/raw/web/zenodo_record_15783761.html"
+}
