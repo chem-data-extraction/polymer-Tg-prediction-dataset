@@ -21,7 +21,7 @@ One **record** = one experimentally measured Tg for a single polymer (or repeat 
 | `data/raw/` | Unmodified PDFs, web snapshots, external exports |
 | `data/extracted/` | Extraction outputs (CSV + `extraction_log.jsonl`) |
 | `data/interim/` | Merged table before final cleaning + cleaning logs |
-| `data/processed/` | Publication dataset (`dataset.csv`, 7 372 rows) |
+| `data/processed/` | Publication dataset (`dataset.csv`, 7 372 rows) + 1 000-row preview |
 | `scripts/` | Reproducible extract, build, clean, validate |
 | `reports/` | Human-readable practice and final reports |
 | `notebooks/` | Optional exploration only |
@@ -48,6 +48,7 @@ raw (PDF / web / external)
   → extract (pdf + web scripts) → data/extracted/*.csv
   → build (merge) → data/interim/merged_records.csv
   → clean → data/processed/dataset.csv
+  → preview → data/processed/dataset_preview.csv
   → validate (rules + pytest)
 ```
 
@@ -57,6 +58,11 @@ Concrete numbers in this project:
 - 14 cleaning steps applied (vocabulary normalization, Tg range check [100, 900] K, missing-SMILES drop, cross-source disagreement flag, schema validation)
 - **7 372 rows** in the published dataset, 10 rows dropped with reasons logged in `data/interim/cleaning_drops.csv`
 - 6 rows flagged with `cross_source_disagreement` in `notes` (textbook PPO Tg vs. low-MW DOPO-PPO oligomers)
+
+## Browse the data
+
+- Full dataset (1.8 MB, 7 372 rows): [`data/processed/dataset.csv`](data/processed/dataset.csv) — too large for GitHub's interactive CSV viewer; download or `git clone` to use.
+- Stratified preview (240 KB, 1 000 rows): [`data/processed/dataset_preview.csv`](data/processed/dataset_preview.csv) — renders directly as a searchable, sortable table on GitHub. Includes all 5 PDF-sourced rows and all 6 `cross_source_disagreement` rows, plus 994 Zenodo rows. See `data/processed/README.md` for details.
 
 ## Final dataset at a glance
 
@@ -79,6 +85,7 @@ Concrete numbers in this project:
 ## Required final artifacts
 
 - `data/processed/dataset.csv` aligned with `specs/dataset_schema.json`
+- `data/processed/dataset_preview.csv` for in-browser inspection on GitHub
 - Updated `specs/source_map.json` and extraction manifests
 - Practice reports 1–5 and `reports/final_report.md`
 - `dataset_card.md`, `LICENSE`, `CITATION.cff`
@@ -99,6 +106,7 @@ Expected output: `Validation passed. (0 warning(s))` and `15 passed`.
 ```bash
 python scripts/build_dataset.py    # merge extracts → data/interim/merged_records.csv
 python scripts/clean_dataset.py    # normalize and write data/processed/dataset.csv
+python scripts/make_preview.py     # 1 000-row stratified preview → dataset_preview.csv
 ```
 
 Practices 3 and 4 used the actual extraction scripts:
@@ -107,6 +115,10 @@ Practices 3 and 4 used the actual extraction scripts:
 python scripts/extract_pdf.py      # PDF extraction (Practice 3)
 python scripts/extract_web.py      # web/dataset extraction (Practice 4)
 ```
+
+## Reproduce in Colab
+
+Open `notebooks/practice5_colab.ipynb` in Google Colab to run the full Practice 5 pipeline (build + clean + validate + inspect) without a local install. A separate `notebooks/make_preview_colab.ipynb` regenerates `dataset_preview.csv`.
 
 ## License and citation
 
