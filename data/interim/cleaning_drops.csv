@@ -1,0 +1,11 @@
+record_id,reason,detail
+rec_pdf_008,tg_value_missing,tg_value=nan
+rec_pdf_006,smiles_missing,repeat_unit_smiles empty; structure not resolved in Practice 3 (polyimide auto-assembly skipped)
+rec_pdf_007,smiles_missing,repeat_unit_smiles empty; structure not resolved in Practice 3 (polyimide auto-assembly skipped)
+rec_pdf_009,smiles_missing,repeat_unit_smiles empty; structure not resolved in Practice 3 (polyimide auto-assembly skipped)
+rec_pdf_010,smiles_missing,repeat_unit_smiles empty; structure not resolved in Practice 3 (polyimide auto-assembly skipped)
+rec_pdf_011,smiles_missing,repeat_unit_smiles empty; structure not resolved in Practice 3 (polyimide auto-assembly skipped)
+rec_pdf_012,smiles_missing,repeat_unit_smiles empty; structure not resolved in Practice 3 (polyimide auto-assembly skipped)
+rec_pdf_013,smiles_missing,repeat_unit_smiles empty; structure not resolved in Practice 3 (polyimide auto-assembly skipped)
+rec_pdf_014,smiles_missing,repeat_unit_smiles empty; structure not resolved in Practice 3 (polyimide auto-assembly skipped)
+rec_pdf_015,smiles_missing,repeat_unit_smiles empty; structure not resolved in Practice 3 (polyimide auto-assembly skipped)

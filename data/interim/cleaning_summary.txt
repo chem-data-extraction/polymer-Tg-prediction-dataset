@@ -1,0 +1,6 @@
+start_rows: 7382
+end_rows: 7372
+dropped_total: 10
+dropped_smiles_missing: 9
+dropped_tg_value_missing: 1
+flagged_cross_source_disagreement: 6
