@@ -2,9 +2,13 @@
 ## Project summary
 
 **Title:** Polymer Tg prediction dataset
+
 **Version:** 1.0.0 (Practice 5 completed)
+
 **Repository:** https://github.com/chem-data-extraction/polymer-Tg-prediction-dataset
+
 **License:** CC-BY-4.0
+
 **Citation:** see `CITATION.cff`
 
 The dataset contains experimentally measured glass transition temperatures
