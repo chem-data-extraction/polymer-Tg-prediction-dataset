@@ -1,16 +1,16 @@
 # Polymer Glass Transition Temperature (Tg) Prediction Dataset
 
-Publication-ready **dataset project template** for the course *Extraction and preparation of chemical information*. Students move from a research topic to a structured, validated dataset with documented sources, extraction steps, cleaning pipeline, reports, and citation metadata.
+Publication-ready **dataset project** for the course *Extraction and preparation of chemical information*. The repository moves from a research topic to a structured, validated dataset with documented sources, extraction steps, cleaning pipeline, reports, and citation metadata.
 
-**Example topic:** Aptamer–protein binding dataset (replace with your own project in `project.json`).
+**Topic:** Polymers with experimentally measured glass transition temperature, assembled from open-access scientific articles and a public Zenodo deposit.
 
 ## Scientific task
 
-Collect experimentally reported aptamer–protein binding measurements (sequences, targets, affinity values, assay context) so they can be compared across literature and database sources.
+Collect polymers with experimentally measured glass transition temperature (Tg). Each record contains the polymer structure or repeat unit, material class, measurement context (method, unit, uncertainty), and reported Tg value, so that polymer families can be compared and a structure–property dataset can be built for predicting Tg from molecular or computed descriptors.
 
 ## What is one record?
 
-One **record** = one experimentally reported aptamer–protein binding measurement from a specific source (one row in `data/processed/dataset.csv`). See `project.json` and `reports/practice_01_record_and_schema.md`.
+One **record** = one experimentally measured Tg for a single polymer (or repeat unit) reported in a specific source, together with the measurement context (one row in `data/processed/dataset.csv`). See `project.json` and `reports/practice_01_record_and_schema.md`.
 
 ## Repository structure
 
@@ -20,8 +20,8 @@ One **record** = one experimentally reported aptamer–protein binding measureme
 | `specs/` | JSON schemas, source map, manifests, pipeline, validation rules |
 | `data/raw/` | Unmodified PDFs, web snapshots, external exports |
 | `data/extracted/` | Extraction outputs (CSV + `extraction_log.jsonl`) |
-| `data/interim/` | Merged table before final cleaning |
-| `data/processed/` | Publication dataset (`dataset.csv`) |
+| `data/interim/` | Merged table before final cleaning + cleaning logs |
+| `data/processed/` | Publication dataset (`dataset.csv`, 7 372 rows) |
 | `scripts/` | Reproducible extract, build, clean, validate |
 | `reports/` | Human-readable practice and final reports |
 | `notebooks/` | Optional exploration only |
@@ -31,15 +31,15 @@ One **record** = one experimentally reported aptamer–protein binding measureme
 
 ## Five course practices
 
-Develop the repository in five steps (see `reports/`):
+The repository was developed in five steps (see `reports/`):
 
-1. **Record definition and dataset schema** — `specs/dataset_schema.json`, Practice 1 report  
-2. **Source map** — `specs/source_map.json`, Practice 2 report  
-3. **PDF extraction** — `specs/pdf_extraction_manifest.json`, `scripts/extract_pdf.py`, Practice 3 report  
-4. **Web extraction** — `specs/web_extraction_manifest.json`, `scripts/extract_web.py`, Practice 4 report  
-5. **Cleaning, normalization and publication** — `specs/cleaning_pipeline.json`, cleaning scripts, Practice 5 report  
+1. **Record definition and dataset schema** — `specs/dataset_schema.json`, `reports/practice_01_record_and_schema.md`
+2. **Source map** — `specs/source_map.json`, `reports/practice_02_source_map.md`
+3. **PDF extraction** — `specs/pdf_extraction_manifest.json`, `scripts/extract_pdf.py`, `reports/practice_03_pdf_extraction.md`
+4. **Web extraction** — `specs/web_extraction_manifest.json`, `scripts/extract_web.py`, `reports/practice_04_web_extraction.md`
+5. **Cleaning, normalization and publication** — `specs/cleaning_pipeline.json`, `scripts/build_dataset.py`, `scripts/clean_dataset.py`, `reports/practice_05_cleaning_publication.md`
 
-Complete **`reports/final_report.md`** and **`dataset_card.md`** before submission.
+`reports/final_report.md` and `dataset_card.md` summarize the finished dataset.
 
 ## Data pipeline
 
@@ -50,6 +50,31 @@ raw (PDF / web / external)
   → clean → data/processed/dataset.csv
   → validate (rules + pytest)
 ```
+
+Concrete numbers in this project:
+
+- 15 rows from PDF extraction (3 MDPI *Polymers* articles) + 7 367 rows from the LamaLab Zenodo Tg deposit → **7 382 interim rows**
+- 14 cleaning steps applied (vocabulary normalization, Tg range check [100, 900] K, missing-SMILES drop, cross-source disagreement flag, schema validation)
+- **7 372 rows** in the published dataset, 10 rows dropped with reasons logged in `data/interim/cleaning_drops.csv`
+- 6 rows flagged with `cross_source_disagreement` in `notes` (textbook PPO Tg vs. low-MW DOPO-PPO oligomers)
+
+## Final dataset at a glance
+
+| Column | Description |
+|--------|-------------|
+| `record_id` | Unique row identifier |
+| `polymer_name` | Name as given in the source |
+| `repeat_unit_smiles` | PSMILES with `[*]` attachment points |
+| `polymer_class` | Controlled vocabulary (16 classes incl. `other`) |
+| `tg_value` | Raw numeric Tg as reported |
+| `tg_unit` | `C` or `K` |
+| `tg_std` | Reported uncertainty (same unit as `tg_value`) |
+| `measurement_method` | DSC / DMA / TMA / dilatometry / dielectric_spectroscopy / simulation_MD / unknown |
+| `source_id` | Foreign key into `specs/source_map.json` |
+| `source_type` | paper / supplementary / dataset / aggregator / database / github_repository |
+| `doi` | DOI of the source |
+| `extraction_method` | manual_pdf / pdf_table_extraction / web_scraping / api_query / dataset_download / manual_aggregator_lookup |
+| `notes` | Free text; carries `cross_source_disagreement` flags |
 
 ## Required final artifacts
 
@@ -67,22 +92,24 @@ python scripts/validate_project.py
 pytest
 ```
 
+Expected output: `Validation passed. (0 warning(s))` and `15 passed`.
+
 ## How to build the dataset
 
 ```bash
-python scripts/build_dataset.py    # merge extracts → interim + processed
-python scripts/clean_dataset.py    # normalize and write processed dataset
+python scripts/build_dataset.py    # merge extracts → data/interim/merged_records.csv
+python scripts/clean_dataset.py    # normalize and write data/processed/dataset.csv
 ```
 
-Placeholder extraction (no PDF/HTML libraries required):
+Practices 3 and 4 used the actual extraction scripts:
 
 ```bash
-python scripts/extract_pdf.py
-python scripts/extract_web.py
+python scripts/extract_pdf.py      # PDF extraction (Practice 3)
+python scripts/extract_web.py      # web/dataset extraction (Practice 4)
 ```
 
 ## License and citation
 
-- Replace the placeholder in **`LICENSE`** before publication (e.g. CC-BY-4.0 or CC0-1.0, subject to upstream source licenses).
-- Fill in **`CITATION.cff`** with authors, version, and repository URL.
-- Summarize the dataset for users in **`dataset_card.md`**.
+- License: **CC-BY-4.0** (see `LICENSE`). Underlying sources retain their own licenses (CC-BY-3.0 / CC-BY-4.0 for MDPI *Polymers*; Zenodo deposit licensed as declared on the record).
+- Citation: see `CITATION.cff` (authors, version, repository URL).
+- Dataset summary for downstream users: `dataset_card.md`.
