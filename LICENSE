@@ -1,6 +1,62 @@
-PLACEHOLDER LICENSE
+Attribution 4.0 International (CC BY 4.0)
 
-Replace this placeholder with the selected dataset license before publication.
-Recommended options may include CC-BY-4.0 or CC0-1.0, depending on source data constraints.
+Copyright (c) 2026 The Polymer Tg prediction dataset authors
 
-This template is provided for educational use only until a final license is chosen.
+This dataset is licensed under the Creative Commons Attribution 4.0
+International License (CC BY 4.0). You are free to:
+
+  Share — copy and redistribute the material in any medium or format
+  Adapt — remix, transform, and build upon the material for any purpose,
+          even commercially.
+
+Under the following terms:
+
+  Attribution — You must give appropriate credit, provide a link to the
+                license, and indicate if changes were made. You may do so in
+                any reasonable manner, but not in any way that suggests the
+                licensor endorses you or your use.
+
+  No additional restrictions — You may not apply legal terms or technological
+                measures that legally restrict others from doing anything
+                the license permits.
+
+Notices:
+
+  - You do not have to comply with the license for elements of the material
+    in the public domain or where your use is permitted by an applicable
+    exception or limitation.
+  - No warranties are given. The license may not give you all of the
+    permissions necessary for your intended use. For example, other rights
+    such as publicity, privacy, or moral rights may limit how you use the
+    material.
+
+The full text of the license is available at
+https://creativecommons.org/licenses/by/4.0/legalcode
+
+A human-readable summary is available at
+https://creativecommons.org/licenses/by/4.0/
+
+----
+
+ATTRIBUTION FOR UPSTREAM SOURCES
+
+This dataset compiles values from the following sources. Please cite them in
+addition to the present dataset whenever you redistribute or build upon it.
+
+  1. Pérez-Francisco, J. M. et al. (2024). "Rigid alicyclic polyimide films
+     based on BTD dianhydride." Polymers, 16(22), 3188.
+     DOI: 10.3390/polym16223188. License: CC-BY-3.0.
+
+  2. Ren, X. et al. (2023). "Fluorene-containing dianhydride polyimides with
+     amide-bridged diamines." Polymers, 15(17), 3549.
+     DOI: 10.3390/polym15173549. License: CC-BY-4.0.
+
+  3. Lecoeur, S. et al. (2024). "DOPO-functionalized poly(2,6-dimethyl-1,
+     4-phenylene oxide) oligomers." Polymers, 16(2), 303.
+     DOI: 10.3390/polym16020303. License: CC-BY-4.0.
+
+  4. LamaLab. Polymer Tg dataset on Zenodo.
+     DOI: 10.5281/zenodo.15783761. License as declared on the Zenodo record.
+
+  5. PubChem (NIH/NLM). Compound records resolved via PUG-REST for monomer
+     identification. Public domain.
