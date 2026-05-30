@@ -1,7 +1,7 @@
 {
   "project_id": "polymer_tg_prediction",
   "project_title": "Polymer Tg prediction dataset",
-  "project_status": "in_progress",
+  "project_status": "practice_05_completed",
   "scientific_task": "Collect polymers with experimentally measured glass transition temperature (Tg). Each record includes the polymer structure or repeat unit, material class, measurement context, and reported Tg value. The dataset is intended for comparing polymer families and for building a structure-property dataset to predict Tg from molecular or computed descriptors.",
   "record_definition": {
     "one_record": "One experimentally measured glass transition temperature (Tg) for a single polymer (or repeat unit) reported in a specific source, together with measurement context (method, unit, uncertainty)."
@@ -16,7 +16,15 @@
   "final_dataset_path": "data/processed/dataset.csv",
   "schema_path": "specs/dataset_schema.json",
   "source_map_path": "specs/source_map.json",
-  "created_by": "",
+  "cleaning_pipeline_path": "specs/cleaning_pipeline.json",
+  "validation_rules_path": "specs/validation_rules.json",
+  "license": "CC-BY-4.0",
+  "license_path": "LICENSE",
+  "citation_path": "CITATION.cff",
+  "dataset_card_path": "dataset_card.md",
+  "final_record_count": 7372,
+  "created_by": "TODO_Your_Name",
   "created_date": "2026-05-28",
-  "version": "0.2.0"
+  "last_updated": "2026-05-30",
+  "version": "1.0.0"
 }
