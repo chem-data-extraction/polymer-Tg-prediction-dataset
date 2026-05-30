@@ -1,0 +1,174 @@
+{
+  "validation_version": "1.0.0",
+  "applies_to": "data/processed/dataset.csv",
+  "schema_reference": "specs/dataset_schema.json",
+  "rules": [
+    {
+      "rule_id": "files_exist_core",
+      "target": "repository",
+      "rule_type": "required_files",
+      "severity": "error",
+      "description": "Core project files (project.json, schema, source map, manifests, cleaning pipeline, validation rules, build/clean/validate scripts) must exist."
+    },
+    {
+      "rule_id": "dataset_csv_exists",
+      "target": "data/processed/dataset.csv",
+      "rule_type": "file_exists",
+      "severity": "error",
+      "description": "The published processed dataset CSV must exist."
+    },
+    {
+      "rule_id": "json_files_parseable",
+      "target": "specs/*.json + project.json",
+      "rule_type": "valid_json",
+      "severity": "error",
+      "description": "All JSON files in specs/ and the top-level project.json must parse."
+    },
+    {
+      "rule_id": "columns_match_schema",
+      "target": "data/processed/dataset.csv",
+      "rule_type": "schema_columns",
+      "severity": "error",
+      "description": "Columns of dataset.csv must match exactly the fields listed in specs/dataset_schema.json, in order."
+    },
+    {
+      "rule_id": "record_id_not_null",
+      "target": "record_id",
+      "rule_type": "not_null",
+      "severity": "error",
+      "description": "Every row must have a non-empty record_id."
+    },
+    {
+      "rule_id": "record_id_unique",
+      "target": "record_id",
+      "rule_type": "unique",
+      "severity": "error",
+      "description": "record_id values must be unique across the dataset."
+    },
+    {
+      "rule_id": "source_id_not_null",
+      "target": "source_id",
+      "rule_type": "not_null",
+      "severity": "error",
+      "description": "Every row must reference a source_id."
+    },
+    {
+      "rule_id": "source_id_in_source_map",
+      "target": "source_id",
+      "rule_type": "foreign_key",
+      "severity": "error",
+      "description": "Every source_id in the dataset must appear in specs/source_map.json (after cleaning step 10)."
+    },
+    {
+      "rule_id": "tg_value_numeric",
+      "target": "tg_value",
+      "rule_type": "numeric",
+      "severity": "error",
+      "description": "tg_value must be a finite number."
+    },
+    {
+      "rule_id": "tg_unit_allowed",
+      "target": "tg_unit",
+      "rule_type": "allowed_values",
+      "severity": "error",
+      "allowed": ["C", "K"],
+      "description": "tg_unit must be one of: C, K."
+    },
+    {
+      "rule_id": "tg_within_realistic_range_k",
+      "target": "tg_value+tg_unit",
+      "rule_type": "range",
+      "severity": "error",
+      "min_k": 100,
+      "max_k": 900,
+      "description": "Converted to Kelvin, every tg_value must lie within [100, 900] K."
+    },
+    {
+      "rule_id": "polymer_class_allowed",
+      "target": "polymer_class",
+      "rule_type": "allowed_values",
+      "severity": "error",
+      "allowed": [
+        "polyimide",
+        "polyamide",
+        "polyester",
+        "polycarbonate",
+        "polyolefin",
+        "polystyrene",
+        "poly(meth)acrylate",
+        "polyether",
+        "polyurethane",
+        "polysiloxane",
+        "polysulfone",
+        "polybenzimidazole",
+        "polyphenylene_oxide",
+        "polysaccharide",
+        "fluoropolymer",
+        "other"
+      ],
+      "description": "polymer_class must come from the controlled vocabulary in the schema."
+    },
+    {
+      "rule_id": "measurement_method_allowed",
+      "target": "measurement_method",
+      "rule_type": "allowed_values",
+      "severity": "error",
+      "allowed": [
+        "DSC",
+        "DMA",
+        "TMA",
+        "dilatometry",
+        "dielectric_spectroscopy",
+        "simulation_MD",
+        "unknown"
+      ],
+      "description": "measurement_method must be one of the controlled methods."
+    },
+    {
+      "rule_id": "source_type_allowed",
+      "target": "source_type",
+      "rule_type": "allowed_values",
+      "severity": "error",
+      "allowed": ["paper", "supplementary", "dataset", "aggregator", "database", "github_repository"],
+      "description": "source_type must be one of the controlled values."
+    },
+    {
+      "rule_id": "extraction_method_allowed",
+      "target": "extraction_method",
+      "rule_type": "allowed_values",
+      "severity": "error",
+      "allowed": [
+        "manual_pdf",
+        "pdf_table_extraction",
+        "web_scraping",
+        "api_query",
+        "dataset_download",
+        "manual_aggregator_lookup"
+      ],
+      "description": "extraction_method must be one of the controlled values."
+    },
+    {
+      "rule_id": "repeat_unit_smiles_not_empty",
+      "target": "repeat_unit_smiles",
+      "rule_type": "not_null",
+      "severity": "error",
+      "description": "repeat_unit_smiles is required by the schema."
+    },
+    {
+      "rule_id": "minimum_record_count",
+      "target": "data/processed/dataset.csv",
+      "rule_type": "min_rows",
+      "severity": "warning",
+      "min_rows": 10,
+      "description": "Dataset should have at least 10 rows to be informative."
+    },
+    {
+      "rule_id": "multiple_source_types_present",
+      "target": "source_type",
+      "rule_type": "min_unique",
+      "severity": "warning",
+      "min_unique": 2,
+      "description": "Dataset should combine at least two source types (e.g. paper + dataset) to demonstrate that PDF and web Practices are integrated."
+    }
+  ]
+}
