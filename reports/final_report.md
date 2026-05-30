@@ -1,5 +1,4 @@
 # Final report — Polymer Tg prediction dataset
-
 ## Project summary
 
 **Title:** Polymer Tg prediction dataset
@@ -34,7 +33,6 @@ starting point with end-to-end provenance.
 | `paper_polym15173549` (Ren, FLPI polyimides) | paper | CC-BY-4.0 | 0 (extracted but dropped: SMILES not resolved) |
 | `ds_zenodo_lamalab_tg` (LamaLab Zenodo) | dataset | CC-BY (Zenodo deposit) | 7 367 |
 | `agg_pubchem` (PubChem PUG-REST) | aggregator | public-domain facts | 0 (reference only, monomer lookup) |
-
 Full source descriptions: `specs/source_map.json`.
 
 ## Extraction summary
@@ -125,7 +123,6 @@ numeric range, non-empty SMILES, and the combined-source composition.
 | Colab verification notebook | `notebooks/practice_05_colab.ipynb` |
 
 ## How to reproduce
-
 ```
 git clone https://github.com/chem-data-extraction/polymer-Tg-prediction-dataset.git
 cd polymer-Tg-prediction-dataset
@@ -135,6 +132,3 @@ python scripts/clean_dataset.py
 python scripts/validate_project.py
 pytest
 ```
-
-Or open `notebooks/practice_05_colab.ipynb` in Google Colab — it runs all of
-the above and previews the resulting dataset.
