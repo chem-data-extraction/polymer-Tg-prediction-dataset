@@ -1,0 +1,168 @@
+{
+  "pipeline_version": "1.0.0",
+  "pipeline_name": "polymer_tg_cleaning_pipeline",
+  "description": "Cleaning, normalization, deduplication and conflict-resolution steps applied to the merged PDF (Practice 3) + web/dataset (Practice 4) extraction tables to produce the publication-ready dataset at data/processed/dataset.csv.",
+  "inputs": [
+    "data/extracted/all_papers_table3_filled.csv",
+    "data/extracted/ds_zenodo_lamalab_tg.csv"
+  ],
+  "intermediate": "data/interim/merged_records.csv",
+  "output": "data/processed/dataset.csv",
+  "schema_reference": "specs/dataset_schema.json",
+  "steps": [
+    {
+      "step_id": "01_select_schema_columns",
+      "operation": "column_selection",
+      "description": "From each extracted CSV keep only the columns listed in specs/dataset_schema.json. Drop helper columns (page, table_id, evidence_text, review_status, zenodo_row_index, smiles_source, monomer_a_smiles, monomer_b_smiles, etc.). Missing schema columns are added as empty.",
+      "inputs": [
+        "data/extracted/all_papers_table3_filled.csv",
+        "data/extracted/ds_zenodo_lamalab_tg.csv"
+      ],
+      "fields_kept": [
+        "record_id",
+        "polymer_name",
+        "repeat_unit_smiles",
+        "polymer_class",
+        "tg_value",
+        "tg_unit",
+        "tg_std",
+        "measurement_method",
+        "source_id",
+        "source_type",
+        "doi",
+        "extraction_method",
+        "notes"
+      ]
+    },
+    {
+      "step_id": "02_merge_sources",
+      "operation": "concatenate",
+      "description": "Concatenate the column-aligned PDF and web tables into one interim table.",
+      "output_file": "data/interim/merged_records.csv"
+    },
+    {
+      "step_id": "03_strip_and_unicode_normalize",
+      "operation": "text_cleanup",
+      "description": "Trim whitespace, collapse runs of whitespace, normalize Unicode to NFC for all string fields. Replace common missing-value tokens (NA, N/A, -, none, null, '') with empty strings.",
+      "fields": [
+        "polymer_name",
+        "repeat_unit_smiles",
+        "polymer_class",
+        "tg_unit",
+        "measurement_method",
+        "source_id",
+        "source_type",
+        "doi",
+        "extraction_method",
+        "notes"
+      ]
+    },
+    {
+      "step_id": "04_normalize_polymer_class",
+      "operation": "controlled_vocabulary",
+      "description": "Map polymer_class values from each source to the closed vocabulary defined in dataset_schema.json. The Zenodo dataset uses plural English labels (Polysiloxanes, Polyvinyls, ...), the PDF extraction uses snake_case (polyimide, polyphenylene_oxide). Both are mapped through scripts/clean_dataset.py POLYMER_CLASS_MAP. Anything that does not resolve is set to 'other' and the original label appended to notes.",
+      "target_field": "polymer_class",
+      "vocabulary": [
+        "polyimide",
+        "polyamide",
+        "polyester",
+        "polycarbonate",
+        "polyolefin",
+        "polystyrene",
+        "poly(meth)acrylate",
+        "polyether",
+        "polyurethane",
+        "polysiloxane",
+        "polysulfone",
+        "polybenzimidazole",
+        "polyphenylene_oxide",
+        "polysaccharide",
+        "fluoropolymer",
+        "other"
+      ]
+    },
+    {
+      "step_id": "05_normalize_tg_unit",
+      "operation": "controlled_vocabulary",
+      "description": "Standardize the tg_unit field. Variants like 'degC', '°C', 'Celsius', 'celsius' -> 'C'. Variants like 'Kelvin', 'kelvin', 'k' -> 'K'. Rows with any other value fail this step and are dropped.",
+      "target_field": "tg_unit",
+      "allowed_values": ["C", "K"]
+    },
+    {
+      "step_id": "06_validate_tg_value_numeric",
+      "operation": "numeric_cast",
+      "description": "Cast tg_value and tg_std to float. Rows where tg_value cannot be parsed or is null are dropped (the schema marks tg_value as required). Dropped rows are logged with reason='tg_value_missing'.",
+      "target_field": "tg_value"
+    },
+    {
+      "step_id": "07_range_check_tg_kelvin",
+      "operation": "range_filter",
+      "description": "Internally convert (tg_value, tg_unit) to Kelvin and reject rows outside the physically reasonable polymer Tg range [100, 900] K. The original tg_value and tg_unit are preserved in the published dataset; the conversion is only used for the range check. Dropped rows logged with reason='tg_out_of_range'.",
+      "min_k": 100,
+      "max_k": 900
+    },
+    {
+      "step_id": "08_validate_smiles_present",
+      "operation": "non_empty_check",
+      "description": "repeat_unit_smiles is required by the schema. Rows with an empty SMILES (typical for polyimides whose repeat unit was not auto-assembled in Practice 3) are dropped from the published dataset and logged with reason='smiles_missing'. They remain in data/extracted/ for future enrichment.",
+      "target_field": "repeat_unit_smiles"
+    },
+    {
+      "step_id": "09_normalize_measurement_method",
+      "operation": "controlled_vocabulary",
+      "description": "Map measurement_method to the schema vocabulary: DSC, DMA, TMA, dilatometry, dielectric_spectroscopy, simulation_MD, unknown. Anything not recognized becomes 'unknown' with the original value appended to notes.",
+      "target_field": "measurement_method",
+      "vocabulary": [
+        "DSC",
+        "DMA",
+        "TMA",
+        "dilatometry",
+        "dielectric_spectroscopy",
+        "simulation_MD",
+        "unknown"
+      ]
+    },
+    {
+      "step_id": "10_validate_source_id_in_map",
+      "operation": "foreign_key",
+      "description": "Every source_id must appear in specs/source_map.json. Rows pointing to undeclared sources are dropped and logged with reason='unknown_source_id'.",
+      "target_field": "source_id",
+      "reference": "specs/source_map.json"
+    },
+    {
+      "step_id": "11_deduplicate_exact",
+      "operation": "deduplicate",
+      "description": "Drop exact duplicates (all schema columns equal). This is a low-aggressive deduplication that only removes accidental copies.",
+      "keep": "first"
+    },
+    {
+      "step_id": "12_flag_cross_source_disagreement",
+      "operation": "conflict_flag",
+      "description": "Within rows that share the same repeat_unit_smiles, if Tg values disagree by more than 20 K when converted to Kelvin, append 'cross_source_disagreement' to the notes of all affected rows. No row is dropped: the dataset deliberately retains multiple measurements because Tg depends on heating rate, method, molecular weight and tacticity, and downstream modelers should see the spread.",
+      "key": "repeat_unit_smiles",
+      "threshold_kelvin": 20
+    },
+    {
+      "step_id": "13_final_schema_validation",
+      "operation": "schema_validation",
+      "description": "Verify that the resulting dataframe has exactly the columns declared in specs/dataset_schema.json, in the same order, and that all required fields are populated. Failure aborts the pipeline.",
+      "reference": "specs/dataset_schema.json"
+    },
+    {
+      "step_id": "14_write_processed_dataset",
+      "operation": "export",
+      "description": "Write data/processed/dataset.csv with UTF-8 encoding, comma-separated, no index, schema-aligned column order.",
+      "output_file": "data/processed/dataset.csv"
+    }
+  ],
+  "logging": {
+    "drop_log": "data/interim/cleaning_drops.csv",
+    "summary_log": "data/interim/cleaning_summary.txt",
+    "level": "INFO"
+  },
+  "design_decisions": [
+    "tg_value and tg_unit are preserved as reported. A normalized Kelvin column is intentionally NOT added because the schema does not declare one; downstream consumers can compute it deterministically.",
+    "Records with missing tg_value or missing repeat_unit_smiles are removed from the published dataset because the schema marks both as required. They remain available in data/extracted/ and are listed in data/interim/cleaning_drops.csv with the reason.",
+    "Conflicting Tg values across sources for the same repeat unit are FLAGGED but NOT averaged or removed: Tg legitimately varies with method, heating rate, molecular weight, and tacticity. Downstream users should choose their own aggregation policy."
+  ]
+}
