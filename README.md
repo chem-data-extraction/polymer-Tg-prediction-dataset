@@ -116,10 +116,6 @@ python scripts/extract_pdf.py      # PDF extraction (Practice 3)
 python scripts/extract_web.py      # web/dataset extraction (Practice 4)
 ```
 
-## Reproduce in Colab
-
-Open `notebooks/practice5_colab.ipynb` in Google Colab to run the full Practice 5 pipeline (build + clean + validate + inspect) without a local install. A separate `notebooks/make_preview_colab.ipynb` regenerates `dataset_preview.csv`.
-
 ## License and citation
 
 - License: **CC-BY-4.0** (see `LICENSE`). Underlying sources retain their own licenses (CC-BY-3.0 / CC-BY-4.0 for MDPI *Polymers*; Zenodo deposit licensed as declared on the record).
