@@ -1,18 +1,69 @@
 cff-version: 1.2.0
-title: "Aptamer–protein binding dataset"
+title: "Polymer Tg prediction dataset"
 message: "If you use this dataset, please cite it as below."
 type: dataset
 authors:
-  - family-names: "Student"
-    given-names: "Name"
-    affiliation: "University / Course"
-repository-code: "https://github.com/example/aptamer-protein-binding-dataset"
-url: "https://github.com/example/aptamer-protein-binding-dataset"
-version: 0.1.0
-date-released: 2026-05-22
-keywords:
-  - aptamer
-  - protein binding
-  - affinity
-  - scientific data extraction
+  - family-names: "Efimova"
+    given-names: "Varvara"
+    affiliation: "Course: Extraction and preparation of chemical information"
+repository-code: "https://github.com/chem-data-extraction/polymer-Tg-prediction-dataset"
+url: "https://github.com/chem-data-extraction/polymer-Tg-prediction-dataset"
+version: 1.0.0
+date-released: 2026-05-30
 license: CC-BY-4.0
+abstract: >
+  Tabular dataset of experimentally measured polymer glass transition
+  temperatures (Tg). Each record contains the polymer structure as a SMILES
+  repeat unit, a material class taken from a controlled vocabulary, the
+  measurement method, the original Tg value with its unit, and full
+  provenance (source ID, source type, DOI, extraction method). The dataset
+  is intended for comparing polymer families and for building
+  structure-property models that predict Tg from molecular or computed
+  descriptors. Compiled from open-access MDPI Polymers articles and the
+  LamaLab Zenodo Tg deposit, with cleaning, normalization, and validation
+  steps documented in the repository.
+keywords:
+  - polymer
+  - glass transition temperature
+  - Tg
+  - SMILES
+  - structure-property
+  - scientific data extraction
+  - cheminformatics
+references:
+  - type: article
+    authors:
+      - family-names: "Pérez-Francisco"
+        given-names: "Jose Manuel"
+    title: "Synthesis Characterization and Physicochemical Properties of Rigid Alicyclic Polyimide Films Based on Bicyclo[2.2.2]oct-7-ene-2,3,5,6-tetracarboxylic Dianhydride"
+    journal: "Polymers"
+    year: 2024
+    volume: 16
+    issue: 22
+    doi: "10.3390/polym16223188"
+  - type: article
+    authors:
+      - family-names: "Ren"
+        given-names: "Xi"
+    title: "Synthesis and Characterization of Organo-Soluble Polyimides Based on Polycondensation Chemistry of Fluorene-Containing Dianhydride and Amide-Bridged Diamines with Good Optical Transparency and Glass Transition Temperatures over 400 ◦C"
+    journal: "Polymers"
+    year: 2023
+    volume: 15
+    issue: 17
+    doi: "10.3390/polym15173549"
+  - type: article
+    authors:
+      - family-names: "Lu"
+        given-names: "Cheng-Hao"
+    title: "Synthesis and Characterization of DOPO-Containing Poly(2,6-dimethyl-1,4-phenylene oxide)s by Oxidative Coupling Polymerization"
+    journal: "Polymers"
+    year: 2024
+    volume: 16
+    issue: 2
+    doi: "10.3390/polym16020303"
+  - type: data
+    authors:
+      - name: "LamaLab"
+    title: "Polymer Tg dataset"
+    year: 2024
+    doi: "10.5281/zenodo.15783761"
